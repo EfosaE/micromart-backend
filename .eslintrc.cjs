@@ -10,7 +10,7 @@ module.exports = {
     jest: true, // Enables Jest globals for linting tests, such as `describe`, `it`, `expect`.
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: ['.eslintrc.cjs'],
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   overrides: [
     {
