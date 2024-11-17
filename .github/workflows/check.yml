@@ -12,14 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # Runs GitHub's Super Linter and excludes unwanted files
-      - name: Lint Code Base
+      - name: Run Super Linter
         uses: github/super-linter@v5
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILTER_REGEX_INCLUDE: 'src/.*\.ts|src/.*\.js'  # Only lint .ts and .js files in the src folder
-          FILTER_REGEX_EXCLUDE: '.*\.(sql|md|json|yml|yaml|log)$|.*(node_modules|dist|prisma)/'  # Exclude SQL, markdown, JSON, node_modules, dist, and prisma folders
+          TS_NODE_PROJECT: './tsconfig.json'  # Point to your tsconfig.json
