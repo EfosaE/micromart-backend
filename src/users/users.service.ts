@@ -7,7 +7,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersService {
   constructor(private db: DatabaseService) {}
   create(createUserDto: CreateUserDto) {
-    console.log(createUserDto)
     return 'This action adds a new user';
   }
 
