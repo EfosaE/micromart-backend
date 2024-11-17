@@ -16,4 +16,5 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run ESLint
-        run: npx eslint ./src --ext .ts --config .eslintrc.cjs
+        run: npx eslint ./src --config .eslintrc.cjs
+
