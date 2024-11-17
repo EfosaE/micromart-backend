@@ -11,8 +11,13 @@ module.exports = {
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  overrides: [
+    {
+      files: ['*.ts'],
+      rules: {
+        // Put your TypeScript-specific rules here
+      },
+    },
   ],
 };
