@@ -27,5 +27,5 @@ jobs:
 
       # Run ESLint with your configuration
       - name: Run ESLint
-        run: npx eslint . --config .eslintrc.json # Adjust this if your config file is elsewhere
+        run: npx eslint . --config .eslintrc.js # Adjust this if your config file is elsewhere
 
