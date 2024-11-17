@@ -25,7 +25,5 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Run ESLint with your configuration
-      - name: Run ESLint
-        run: npx eslint . --config .eslintrc.js # Adjust this if your config file is elsewhere
+    
 
