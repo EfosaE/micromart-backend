@@ -14,10 +14,92 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        String   @id @default(uuid())
   name      String
+  email     String   @unique
   password  String
+  role      UserRole
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  cart     Cart? // A User has one Cart
+  products Product[] // Sellers: Products they sell
+  orders   Order[] // Buyers: Orders they placed
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  SELLER
+}
+
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Foreign key to User (seller)
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Relations
+  OrderItem OrderItem[]
+  CartItem  CartItem[]
+}
+
+model Order {
+  id          String     @id @default(uuid())
+  totalAmount Float
+  status      String // e.g., 'PENDING', 'COMPLETED', etc.
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relation to the user (buyer)
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Many-to-many relationship with products through orderItems
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  productId String
+  orderId   String
+  quantity  Int
+  price     Float
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+
+  @@id([orderId, productId]) // Composite primary key
+}
+
+// CART
+model Cart {
+  id        String   @id @default(uuid()) // Cart ID is now a unique UUID
+  userId    String   @unique // User ID, foreign key for the associated user
+  user      User     @relation(fields: [userId], references: [id]) // Relates back to User model
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  cartItems CartItem[] // A Cart has many CartItems
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int // Quantity of the product
+  cartId    String // Foreign key to Cart
+  productId String // Foreign key to Product
+  cart      Cart    @relation(fields: [cartId], references: [userId])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId]) // Ensures that a product is only added once per cart
 }
