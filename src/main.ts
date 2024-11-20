@@ -3,9 +3,13 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AllExceptionsFilter } from './all-exceptions.filter';
 import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(helmet());
+  app.enableCors();
   // Global ValidationPipe for DTO validation
   app.useGlobalPipes(
     new ValidationPipe({
