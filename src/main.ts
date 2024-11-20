@@ -18,11 +18,15 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     })
   );
-    const { httpAdapter } = app.get(HttpAdapterHost);
+  const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
-  
-  app.setGlobalPrefix('api/v1');
 
+  // Redirect requests from root to /api/v1
+  app.getHttpAdapter().get('/', (req, res) => {
+    res.redirect('/api/v1');
+  });
+
+  app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder()
     .setTitle('Micromart')
