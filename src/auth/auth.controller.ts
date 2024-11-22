@@ -2,15 +2,18 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
   Post,
   Req,
+  Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { LoginDto } from './dto/login-dto';
-import { Request } from 'express';
-import { SkipAuth } from 'src/utils/utils';
+
+import { Request, Response } from 'express';
+import { SkipAuth } from 'src/decorators/skip-auth';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { LoginDto } from './dto/signIn-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,9 +27,17 @@ export class AuthController {
 
   @SkipAuth()
   @Post('login')
-  @HttpCode(200)
-  loginUser(@Body() loginUserDto: LoginDto) {
-    return this.authService.login(loginUserDto);
+  @ApiOperation({ summary: 'Logs the user in and provides tokens' })
+  @ApiResponse({
+    schema: {
+      example: {
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  loginUser(@Body() loginUserDto: LoginDto, @Res() res: Response) {
+    return this.authService.login(loginUserDto, res);
   }
 
   // @UseGuards(AuthGuard) no longer necessary as AuthGuard is already global
@@ -35,5 +46,26 @@ export class AuthController {
     // Access the user data that was attached in middleware
     const user = req['user'];
     return user;
+  }
+
+  // refresh token endpoint
+  @SkipAuth()
+  @Post('refresh')
+  async refresh(@Req() req: Request): Promise<{ accessToken: string }> {
+    console.log(req.cookies);
+    const refreshToken = req.cookies['refresh_token']; // Securely retrieve refresh token from cookies
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token missing: Please login');
+    }
+
+    // Validate the refresh token
+    const user = await this.authService.validateRefreshToken(refreshToken);
+    console.log('user', user);
+    const formattedUser = { id: user.sub, name: user.username };
+    const newAccessToken =
+      await this.authService.createAccessToken(formattedUser);
+
+    return { accessToken: newAccessToken };
   }
 }

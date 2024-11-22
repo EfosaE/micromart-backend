@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AllExceptionsFilter } from './all-exceptions.filter';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
 async function bootstrap() {
@@ -10,6 +11,8 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors();
+  // Use cookie-parser middleware
+  app.use(cookieParser());
   // Global ValidationPipe for DTO validation
   app.useGlobalPipes(
     new ValidationPipe({

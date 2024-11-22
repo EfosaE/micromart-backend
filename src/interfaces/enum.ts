@@ -3,3 +3,9 @@ export enum UserRole {
   USER = 'USER',
   SELLER = 'SELLER',
 }
+
+export interface TokenPayload {
+  id: string;
+  name: string;
+}
+

@@ -8,5 +8,6 @@ import { LoggerModule } from 'src/logger/logger.module';
   imports:[DatabaseModule, LoggerModule],
   controllers: [UsersController],
   providers: [UsersService],
+  exports:[UsersService]
 })
 export class UsersModule {}
