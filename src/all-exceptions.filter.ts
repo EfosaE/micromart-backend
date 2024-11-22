@@ -11,6 +11,7 @@ import {
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 import { MyLoggerService } from './logger/logger.service';
+import { handlePrismaError } from './utils/utils';
 
 type MyResponseObj = {
   statusCode: number;
@@ -22,11 +23,13 @@ type MyResponseObj = {
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
   private readonly logger = new MyLoggerService(AllExceptionsFilter.name);
+  // private readonly configService = new ConfigService();
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
+    const environment = process.env.NODE_ENV;
 
     const myResponseObj: MyResponseObj = {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -44,16 +47,28 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         typeof errorResponse === 'string'
           ? { message: errorResponse }
           : errorResponse;
-    } else if (
-      exception instanceof PrismaClientKnownRequestError ||
-      exception instanceof PrismaClientValidationError
-    ) {
-      // Handle Prisma validation errors (e.g., unique constraint violation)
-      myResponseObj.statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+    } else if (exception instanceof PrismaClientKnownRequestError) {
+      if (environment === 'development') {
+        myResponseObj.statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+        myResponseObj.response = {
+          message: exception.message, // Prisma error message
+          code: exception.code, // Prisma error code (e.g., P2002)
+          meta: exception.meta, // Additional metadata for debugging
+        };
+      } else {
+        const error = handlePrismaError(exception);
+        myResponseObj.statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+        myResponseObj.response = {
+          message: error.message, // Prisma error message
+          code: exception.code, // Prisma error code (e.g., P2002)
+          meta: exception.meta, // Additional metadata for debugging
+        };
+      }
+    } else if (exception instanceof PrismaClientValidationError) {
+      // Handle Prisma validation errors
+      myResponseObj.statusCode = HttpStatus.BAD_REQUEST; // 400 Bad Request
       myResponseObj.response = {
-        message: (exception as PrismaClientKnownRequestError).message,
-        code: (exception as PrismaClientKnownRequestError).code, // Prisma error code, useful for debugging
-        meta: (exception as PrismaClientKnownRequestError).meta, // Additional meta data for debugging
+        message: exception.message, // Validation error message
       };
     } else {
       // Log unexpected errors
@@ -64,7 +79,9 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     this.logger.error(
       JSON.stringify({
         ...myResponseObj,
-        exception: exception instanceof Error ? exception.stack : exception,
+
+        // for now dont log the stack trace
+        // exception: exception instanceof Error ? exception.stack : exception,
       }),
       AllExceptionsFilter.name
     );

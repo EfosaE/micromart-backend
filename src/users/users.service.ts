@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
 
@@ -11,22 +10,7 @@ export class UsersService {
     private readonly logger: MyLoggerService
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const { name, role, email, password } = createUserDto;
-    const newUser = this.db.user.create({
-      data: {
-        name,
-        email,
-        role,
-        password,
-      },
-    });
-    this.logger.log(
-      `A new user ${(await newUser).email} was created`,
-      UsersService.name
-    );
-    return newUser;
-  }
+ 
 
   findAll() {
     return `This action returns all users`;
