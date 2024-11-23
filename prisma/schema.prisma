@@ -34,19 +34,18 @@ enum UserRole {
   SELLER
 }
 
-
 model Product {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  description String
+  description String?
   price       Float
   quantity    Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+  tags        String[]
   // Foreign key to User (seller)
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
 
   // Relations
   OrderItem OrderItem[]
@@ -54,7 +53,7 @@ model Product {
 }
 
 model Order {
-  id          String     @id @default(uuid())
+  id          String   @id @default(uuid())
   totalAmount Float
   status      String // e.g., 'PENDING', 'COMPLETED', etc.
   createdAt   DateTime @default(now())
