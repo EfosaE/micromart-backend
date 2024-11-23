@@ -43,9 +43,14 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   tags        String[]
+
+
   // Foreign key to User (seller)
   userId      String
   user        User     @relation(fields: [userId], references: [id])
+
+    // Ensuring the name + userId is unique to prevent duplicate products for the same user
+  @@unique([name, userId])
 
   // Relations
   OrderItem OrderItem[]
