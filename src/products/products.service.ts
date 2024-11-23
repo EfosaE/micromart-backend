@@ -6,13 +6,18 @@ import { MyLoggerService } from 'src/logger/logger.service';
 @Injectable()
 export class ProductsService {
   constructor(
-    private db: DatabaseService,
-    private readonly logger: MyLoggerService
+    private readonly logger: MyLoggerService,
+    private db: DatabaseService
   ) {}
   async createProduct(product: ProductDTO) {
     const newProduct = await this.db.product.create({
       data: { ...product },
     });
     return newProduct;
+  }
+
+  async getAllProducts() {
+    const products = await this.db.product.findMany();
+    return products;
   }
 }

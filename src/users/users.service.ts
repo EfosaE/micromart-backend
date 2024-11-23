@@ -8,8 +8,9 @@ import { LoginDto } from 'src/auth/dto/signIn-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
-    private db: DatabaseService,
-    private readonly logger: MyLoggerService
+    private readonly logger: MyLoggerService,
+    private db: DatabaseService
+    
   ) {}
 
   async createUser(user: CreateUserDto) {
