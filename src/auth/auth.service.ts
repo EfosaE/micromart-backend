@@ -1,8 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { HashService } from './hash.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/signIn-user.dto';
 import { UsersService } from 'src/users/users.service';
@@ -101,6 +105,22 @@ export class AuthService {
       return payload;
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
+
+  // extract userID
+  extractUserID(req: Request): string {
+    const authToken = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
+    if (!authToken) {
+      throw new UnauthorizedException('Missing token: please login');
+    }
+    try {
+      // Verify the token and decode it
+      const decodedToken = this.jwtService.verify(authToken);
+      return decodedToken.sub;
+    } catch (error) {
+      if (error)
+        throw new ForbiddenException('Invalid or expired token');
     }
   }
 }

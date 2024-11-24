@@ -27,5 +27,6 @@ import { UsersModule } from 'src/users/users.module';
       useClass: AuthGuard,
     },
   ],
+  exports:[AuthService]
 })
 export class AuthModule {}

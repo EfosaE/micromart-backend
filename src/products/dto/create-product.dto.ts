@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsNumber,
   IsArray,
-  IsUUID,
   IsInt,
   IsPositive,
 } from 'class-validator';
@@ -30,8 +29,4 @@ export class ProductDTO {
   @IsString({ each: true }) // Ensures each element in the array is a string
   @IsNotEmpty()
   tags: string[];
-
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
 }
