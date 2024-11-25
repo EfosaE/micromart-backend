@@ -3,7 +3,6 @@ import { DatabaseService } from 'src/database/database.service';
 import { ProductDTO } from './dto/create-product.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
 
-
 @Injectable()
 export class ProductsService {
   constructor(
@@ -24,7 +23,11 @@ export class ProductsService {
   }
 
   async getAllProducts() {
+    console.log('Before query call');
+    // Check the instance type
+
     const products = await this.db.product.findMany();
+    console.log('After query call');
     return products;
   }
 }

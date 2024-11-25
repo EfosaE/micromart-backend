@@ -12,6 +12,7 @@ export class ProductsController {
 
   @Post()
   createProduct(@Req() req, @Body() productDetails: ProductDTO) {
+
     // Extract userId from the token by calling authService
     const userID = this.authService.extractUserID(req);
     console.log('userID...', userID)

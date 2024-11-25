@@ -1,0 +1,62 @@
+import { customAlphabet } from 'nanoid';
+
+const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 10);
+const randomID = nanoid();
+
+import { INestApplication } from '@nestjs/common';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+function extendPrismaClient() {
+  const prisma = new PrismaClient();
+  return prisma.$extends({
+    client: {
+      async onModuleInit() {
+        await Prisma.getExtensionContext(this)
+          .$connect()
+          .then(() => console.log('database connected'));
+      },
+      async enableShutdownHooks(app: INestApplication) {
+        Prisma.getExtensionContext(this).$on('beforeExit', async () => {
+          await app.close();
+        });
+      },
+    },
+    query: {
+      product: {
+        async findMany({ args, query }) {
+          console.log('findMany extension triggered');
+          return query(args);
+        },
+
+        async create({ args, query }) {
+          console.log('Generated ID:', randomID); // Log the generated ID
+          args.data.id = `PROD-${randomID}`; // Modify the product creation args with the new ID
+
+          return query(args); // Continue with the original query
+        },
+      },
+    },
+  });
+}
+
+export const ExtendedPrismaClient = class {
+  constructor() {
+    return extendPrismaClient();
+  }
+} as new () => ReturnType<typeof extendPrismaClient>;
+
+// // Custom Prisma client with extensions
+// export class PrismaClientExtended extends PrismaClient {
+//   constructor() {
+//     super(); // Initializes PrismaClient
+
+//     // Apply $extends directly inside the constructor to extend the Prisma client functionality
+//     this.$extends({
+//       query: {
+
+//
+//         },
+//       },
+//     });
+//   }
+// }
