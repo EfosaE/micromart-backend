@@ -10,17 +10,23 @@ export class UsersService {
   constructor(
     private readonly logger: MyLoggerService,
     private db: DatabaseService
-    
   ) {}
 
   async createUser(user: CreateUserDto) {
     const newUser = await this.db.user.create({
-      data: { ...user },
+      data: {
+        name: user.name,
+        email: user.email,
+        password: user.password, 
+        roles: [user.role], // Start with the initial role
+        activeRole: user.role, // Set active role to initial role
+      },
       select: {
         id: true,
         name: true,
         email: true,
-        role: true,
+        roles: true,
+        activeRole: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -28,8 +34,9 @@ export class UsersService {
     return newUser;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    const users = await this.db.user.findMany()
+    return {length:users.length, users};
   }
 
   async findOne(credentials: LoginDto) {
@@ -42,7 +49,8 @@ export class UsersService {
         name: true,
         password: true,
         email: true,
-        role: true,
+        roles: true,
+        activeRole: true,
       },
     });
 
@@ -57,4 +65,7 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+ 
+
 }
