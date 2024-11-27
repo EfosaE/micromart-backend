@@ -9,6 +9,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
+import { OrdersModule } from './orders/orders.module';
+import { GoogleOAuthModule } from './googleoauth/googleoauth.module';
+
 
 @Module({
   imports: [
@@ -38,6 +41,8 @@ import { ProductsModule } from './products/products.module';
     ]),
     AuthModule,
     ProductsModule,
+    OrdersModule,
+    GoogleOAuthModule,
   ],
   controllers: [AppController],
   providers: [

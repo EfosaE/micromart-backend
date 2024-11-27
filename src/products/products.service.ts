@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductDTO } from './dto/create-product.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
+import { FilterOptions } from 'src/interfaces/enum';
 
 @Injectable()
 export class ProductsService {
@@ -14,7 +15,7 @@ export class ProductsService {
       data: {
         ...product,
         user: {
-          connect: { id: userID }, // Automatically link the product to the user
+          connect: { id: userID }, // Automatically link the product to the user(seller)
         },
       },
     });
@@ -22,12 +23,31 @@ export class ProductsService {
     return newProduct;
   }
 
-  async getAllProducts() {
-    console.log('Before query call');
-    // Check the instance type
+  async getFilteredProducts(filterOptions: FilterOptions) {
+    const { tags, minPrice, maxPrice } = filterOptions;
+    console.log(filterOptions);
+    const products = await this.db.product.findMany({
+      where: {
+        AND: [
+          {
+            tags: {
+              hasSome: tags, // Filters products having at least one of the specified tags
+            },
+          },
+          {
+            price: {
+              gte: minPrice, // Minimum price filter
+            },
+          },
+          {
+            price: {
+              lte: maxPrice, // Maximum price filter
+            },
+          },
+        ],
+      },
+    });
 
-    const products = await this.db.product.findMany();
-    console.log('After query call');
-    return products;
+    return { length: products.length, products };
   }
 }

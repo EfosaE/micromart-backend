@@ -46,11 +46,11 @@ model Product {
 
 
   // Foreign key to User (seller)
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  sellerId      String
+  user        User     @relation(fields: [sellerId], references: [id])
 
     // Ensuring the name + userId is unique to prevent duplicate products for the same user
-  @@unique([name, userId])
+  @@unique([name, sellerId])
 
   // Relations
   OrderItem OrderItem[]
@@ -65,8 +65,8 @@ model Order {
   updatedAt   DateTime @updatedAt
 
   // Relation to the user (buyer)
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  buyerId String
+  user   User   @relation(fields: [buyerId], references: [id])
 
   // Many-to-many relationship with products through orderItems
   orderItems OrderItem[]
@@ -88,8 +88,8 @@ model OrderItem {
 // CART
 model Cart {
   id        String   @id @default(uuid()) // Cart ID is now a unique UUID
-  userId    String   @unique // User ID, foreign key for the associated user
-  user      User     @relation(fields: [userId], references: [id]) // Relates back to User model
+  buyerId    String   @unique // User ID, foreign key for the associated user
+  user      User     @relation(fields: [buyerId], references: [id]) // Relates back to User model
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -102,7 +102,7 @@ model CartItem {
   quantity  Int // Quantity of the product
   cartId    String // Foreign key to Cart
   productId String // Foreign key to Product
-  cart      Cart    @relation(fields: [cartId], references: [userId])
+  cart      Cart    @relation(fields: [cartId], references: [buyerId])
   product   Product @relation(fields: [productId], references: [id])
 
   @@unique([cartId, productId]) // Ensures that a product is only added once per cart

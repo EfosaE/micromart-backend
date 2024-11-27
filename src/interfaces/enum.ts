@@ -9,3 +9,8 @@ export interface TokenPayload {
   name: string;
 }
 
+export type FilterOptions = {
+  tags?: string[]; // Array of tags to filter by
+  minPrice?: number; // Minimum price
+  maxPrice?: number; // Maximum price
+};

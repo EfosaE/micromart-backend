@@ -1,7 +1,7 @@
 import { customAlphabet } from 'nanoid';
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 10);
-const randomID = nanoid();
+
 
 import { INestApplication } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
@@ -29,6 +29,7 @@ function extendPrismaClient() {
         },
 
         async create({ args, query }) {
+          const randomID = nanoid();
           console.log('Generated ID:', randomID); // Log the generated ID
           args.data.id = `PROD-${randomID}`; // Modify the product creation args with the new ID
 
