@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { ProductDTO } from './dto/create-product.dto';
 import { ProductsService } from './products.service';
 import { AuthService } from 'src/auth/auth.service';
-// import { FilterOptions } from 'src/interfaces/enum';
 import { ProductQueryDto } from './dto/find-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 

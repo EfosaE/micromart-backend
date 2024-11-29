@@ -10,7 +10,7 @@ import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/signIn-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { TokenPayload } from 'src/interfaces/enum';
+import { TokenPayload } from 'src/interfaces/types';
 
 @Injectable()
 export class AuthService {
@@ -119,8 +119,7 @@ export class AuthService {
       const decodedToken = this.jwtService.verify(authToken);
       return decodedToken.sub;
     } catch (error) {
-      if (error)
-        throw new ForbiddenException('Invalid or expired token');
+      if (error) throw new ForbiddenException('Invalid or expired token');
     }
   }
 }
