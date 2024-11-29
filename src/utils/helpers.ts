@@ -36,6 +36,15 @@ function extendPrismaClient() {
           return query(args); // Continue with the original query
         },
       },
+      order: {
+        async create({ args, query }) {
+          const randomID = nanoid();
+          console.log('Generated ID:', randomID); // Log the generated ID
+          args.data.id = `ORD-${randomID}`; // Modify the order creation args with the new ID
+
+          return query(args); // Continue with the original query
+        },
+      },
     },
   });
 }
@@ -46,18 +55,3 @@ export const ExtendedPrismaClient = class {
   }
 } as new () => ReturnType<typeof extendPrismaClient>;
 
-// // Custom Prisma client with extensions
-// export class PrismaClientExtended extends PrismaClient {
-//   constructor() {
-//     super(); // Initializes PrismaClient
-
-//     // Apply $extends directly inside the constructor to extend the Prisma client functionality
-//     this.$extends({
-//       query: {
-
-//
-//         },
-//       },
-//     });
-//   }
-// }

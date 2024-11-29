@@ -70,9 +70,18 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       myResponseObj.response = {
         message: exception.message, // Validation error message
       };
+    } else if (exception instanceof Error ) {
+      myResponseObj.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+      myResponseObj.response = {
+        message: exception.message,
+        stack: process.env.NODE_ENV === 'development' ? exception.stack : undefined, // Optional stack trace
+      };
     } else {
-      // Log unexpected errors
-      console.error(exception);
+      // Catch all other unexpected errors
+      console.error('Unexpected exception:', exception);
+      myResponseObj.response = {
+        message: 'An unexpected error occurred',
+      };
     }
 
     // Log the error for debugging
