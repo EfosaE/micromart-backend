@@ -27,27 +27,35 @@ export class ProductsService {
       where: {
         id: productId,
       },
+      select: {
+        price: true,
+        quantity: true,
+      },
     });
 
     return product;
   }
 
-  async updateProduct(productId: string, quantityOrdered: number) {
-      const updatedProduct = await this.db.product.update({
-        where: { id: productId },
-        data: {
-          quantity: {
-            decrement: quantityOrdered, // Atomically decrement the quantity
-          },
-        },
-      });
+  // async decrementProductQty(productId: string, quantityOrdered: number, trx: unknown) {
+  //   // Step 1: Update the stock for each order item
+  //     const updatedProduct = await prisma.product.updateMany({
+  //       where: {
+  //         id: item.productId,
+  //         quantity: { gte: item.quantity }, // Ensure sufficient stock
+  //       },
+  //       data: {
+  //         quantity: {
+  //           decrement: item.quantity, // Atomically decrement stock
+  //         },
+  //       },
+  //     });
 
-      if (updatedProduct.quantity < 0) {
-        throw new Error('Insufficient stock available');
-      }
+  //     // Check if the update was successful
+  //     if (updatedProduct.count === 0) {
+  //       throw new Error(`Insufficient stock for product ${item.productId}`);
+  //     }
 
-      return updatedProduct;
-  }
+  // }
 
   async getFilteredProducts(filterOptions: FilterOptions) {
     const { tags, minPrice, maxPrice } = filterOptions;

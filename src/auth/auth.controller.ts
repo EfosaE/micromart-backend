@@ -51,7 +51,7 @@ export class AuthController {
   // refresh token endpoint
   @SkipAuth()
   @Post('refresh')
-  async refresh(@Req() req: Request): Promise<{ accessToken: string }> {
+  async refresh(@Req() req: Request, res: Response): Promise<Response> {
     console.log(req.cookies);
     const refreshToken = req.cookies['refresh_token']; // Securely retrieve refresh token from cookies
 
@@ -65,7 +65,8 @@ export class AuthController {
     const formattedUser = { id: user.sub, name: user.username };
     const newAccessToken =
       await this.authService.createAccessToken(formattedUser);
+    this.authService.setTokenInCookie('access_token', newAccessToken, res);
 
-    return { accessToken: newAccessToken };
+    return res.status(200);
   }
 }

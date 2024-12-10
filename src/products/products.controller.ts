@@ -4,7 +4,7 @@ import { ProductsService } from './products.service';
 import { AuthService } from 'src/auth/auth.service';
 import { ProductQueryDto } from './dto/find-product.dto';
 import { ApiTags } from '@nestjs/swagger';
-
+// import { SkipAuth } from 'src/decorators/skip-auth';
 
 @ApiTags('Products') // Group this controller under "Products" in Swagger
 @Controller('products')
@@ -22,6 +22,7 @@ export class ProductsController {
     return this.productsService.createProduct(productDetails, userID);
   }
 
+  // @SkipAuth()
   @Get()
   getAllProducts(@Query() query: ProductQueryDto) {
     return this.productsService.getFilteredProducts(query);

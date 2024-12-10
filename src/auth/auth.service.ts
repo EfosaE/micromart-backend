@@ -60,12 +60,14 @@ export class AuthService {
     const requiredUserPayload = { id, name };
     const accessToken = await this.createAccessToken(requiredUserPayload);
     const refreshToken = await this.createRefreshToken(requiredUserPayload);
-
-    this.setRefreshTokenCookie(refreshToken, res);
+    this.setTokenInCookie('access_token', accessToken, res);
+    this.setTokenInCookie('refresh_token', refreshToken, res);
 
     this.logger.log(`A user: ${user.email} logged in`, AuthService.name);
     // Explicitly return the access token in the response body
-    return res.status(200).json({ accessToken });
+    return res
+      .status(200)
+      .json({ message: `${user.email} logged in sucessfully` });
   }
 
   // Create access token
@@ -86,9 +88,9 @@ export class AuthService {
   }
 
   // set refreshToken
-  setRefreshTokenCookie(token: string, res: Response) {
+  setTokenInCookie(tokenName: string, token: string, res: Response) {
     // Set the refresh token in an HTTP-only cookie
-    res.cookie('refresh_token', token, {
+    res.cookie(tokenName, token, {
       httpOnly: true, // Makes the cookie inaccessible to JavaScript
       secure: process.env.NODE_ENV !== 'development',
       sameSite: 'strict', // Protects against CSRF attacks
@@ -104,20 +106,20 @@ export class AuthService {
       });
       return payload;
     } catch {
-      throw new UnauthorizedException('Invalid or expired refresh token');
+      throw new UnauthorizedException('Invalid or expired refresh token, please login');
     }
   }
 
   // extract userID
   extractUserID(req: Request): string {
-    const authToken = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
+    const authToken = req.cookies?.access_token;// Extract token from Cookie
     if (!authToken) {
       throw new UnauthorizedException('Missing token: please login');
     }
     try {
       // Verify the token and decode it
       const decodedToken = this.jwtService.verify(authToken);
-      return decodedToken.sub;
+      return decodedToken.sub; // The userID resides in the sub property of the payload
     } catch (error) {
       if (error) throw new ForbiddenException('Invalid or expired token');
     }

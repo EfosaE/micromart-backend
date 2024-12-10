@@ -2,12 +2,14 @@ import { customAlphabet } from 'nanoid';
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 10);
 
-
 import { INestApplication } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 function extendPrismaClient() {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    log: ['info'],
+  });
+  // const logger = new MyLoggerService();
   return prisma.$extends({
     client: {
       async onModuleInit() {
@@ -22,12 +24,24 @@ function extendPrismaClient() {
       },
     },
     query: {
-      product: {
-        async findMany({ args, query }) {
-          console.log('findMany extension triggered');
-          return query(args);
+      // Global extension for all models and operations
+      $allModels: {
+        async $allOperations({ model, operation, args, query }) {
+          console.log(
+            `Connection taken for operation: ${operation} on ${model}`
+          );
+          const start = performance.now();
+          const result = await query(args);
+          const end = performance.now();
+          const time = end - start;
+          // logger.debug(`${model}.${operation} took ${time.toFixed(2)}ms`);
+          console.log(
+            `Connection released for operation: ${operation} on ${model} in ${time.toFixed(2)}ms `
+          );
+          return result;
         },
-
+      },
+      product: {
         async create({ args, query }) {
           const randomID = nanoid();
           console.log('Generated ID:', randomID); // Log the generated ID
@@ -54,4 +68,3 @@ export const ExtendedPrismaClient = class {
     return extendPrismaClient();
   }
 } as new () => ReturnType<typeof extendPrismaClient>;
-

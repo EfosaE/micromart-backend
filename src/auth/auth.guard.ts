@@ -19,19 +19,19 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isSkippedAuth = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const isSkippedAuth = this.reflector.getAllAndOverride<boolean>(
+      IS_PUBLIC_KEY,
+      [context.getHandler(), context.getClass()]
+    );
     if (isSkippedAuth) {
       // 💡 See this condition is what bypasses the global guard
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const token = this.extractTokenFromCookie(request);
     if (!token) {
-      throw new UnauthorizedException("Please login");
+      throw new UnauthorizedException('Please login');
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
@@ -42,13 +42,14 @@ export class AuthGuard implements CanActivate {
       // so that we can access it in our route handlers
       request['user'] = payload;
     } catch {
-      throw new ForbiddenException("Token expired...");
+      throw new ForbiddenException('Token expired...');
     }
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+  private extractTokenFromCookie(request: Request): string | undefined {
+    const accessToken = request.cookies?.access_token; 
+    console.log(accessToken)
+    return accessToken; 
   }
 }

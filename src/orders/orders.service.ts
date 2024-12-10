@@ -4,7 +4,6 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { MyLoggerService } from 'src/logger/logger.service';
 import { ProductsService } from 'src/products/products.service';
-import { Product } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { OrderCreatedEvent } from './events/order-created.event';
 
@@ -17,81 +16,77 @@ export class OrdersService {
     private readonly productsService: ProductsService
   ) {}
   async createOrder(buyerId: string, orderInfo: CreateOrderDto) {
-    console.log(orderInfo);
+    // Step 1: Fetch all products needed for the order in a single query
+    const productIds = orderInfo.orderItems.map((item) => item.productId);
 
-    // const products = await this.getProductsFromOrder(orderInfo);
-    // console.log('products array', products);
-    // // Ensure all products exist
-    // if (products.some((product) => !product)) {
-    //   throw new Error('One or more products in the order do not exist');
-    // }
-
-    //  Calculate total amount and prepare order items to ensure we have the quantity in supply
-    const orderItems = await this.validateOrder(orderInfo);
-    console.log('modified orderItems', orderItems);
-    const totalAmount = orderItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-
-    // Remove the 'price' property from each object because the order doesnt need it.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const updatedOrderItems = orderItems.map(({ price, ...rest }) => rest);
-
-    // Step 4: Create the order
-    const order = await this.db.order.create({
-      data: {
-        totalAmount,
-        shippingDetails: orderInfo.shippingDetails,
-        user: {
-          connect: { id: buyerId }, // Associate using the User's ID
-        },
-        orderItems: {
-          create: updatedOrderItems, // Create related order items in a single transaction
-        },
-      },
-      include: {
-        orderItems: true, // Optionally include the order items in the response
-      },
+    const products = await this.db.product.findMany({
+      where: { id: { in: productIds } },
     });
 
-    // Emit the event after order creation
-    this.eventEmitter.emit(
-      'order.created', // Event name
-      new OrderCreatedEvent(order.id) // Payload, using class so I can get Type checks
-    );
-    return order;
+    // Create a map for quick lookup by productId
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
+    console.log(productMap);
+
+    return await this.db.$transaction(async (trx) => {
+      // Step 1: Update the stock for each order item
+      const updatePromises = orderInfo.orderItems.map(async (item) => {
+        const product = productMap.get(item.productId);
+
+        if (!product || product.quantity < item.quantity) {
+          throw new Error(`Insufficient stock for product ${item.productId}`);
+        }
+
+        // reduce the qty in stock
+        await trx.product.update({
+          where: { id: item.productId },
+          data: {
+            quantity: {
+              decrement: item.quantity, // Atomically decrement stock
+            },
+          },
+        });
+
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          price: product.price, // This will now be resolved
+        };
+      });
+
+      // Wait for all updates to finish
+      const validatedOrderItems = await Promise.all(updatePromises);
+      const totalAmount = validatedOrderItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+      // Step 2: Create the order (this step only happens if stock updates succeed)
+      const createdOrder = await trx.order.create({
+        data: {
+          totalAmount,
+          shippingDetails: orderInfo.shippingDetails,
+          user: {
+            connect: { id: buyerId }, // Associate using the User's ID
+          },
+          orderItems: {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            create: validatedOrderItems.map(({ price, ...rest }) => rest),
+          },
+        },
+        include: {
+          orderItems: true, // Optionally include the order items in the response
+        },
+      });
+      // Emit the event after order creation
+      this.eventEmitter.emit(
+        'order.created', // Event name
+        new OrderCreatedEvent(createdOrder.id) // Payload, using class so I can get Type checks
+      );
+      // Step 3: Return the created order
+      return createdOrder;
+    });
   }
 
-  private async getProductsFromOrder(
-    order: CreateOrderDto
-  ): Promise<Product[]> {
-    const productIds = order.orderItems.map((item) => item.productId);
-    // Fetch the products by their IDs
-    const products = await Promise.all(
-      productIds.map((productId) =>
-        this.productsService.getProductByID(productId)
-      )
-    );
-    return products;
-  }
-
-  private async validateOrder(orderInfo: CreateOrderDto) {
-     const orderItems = await Promise.all(
-       orderInfo.orderItems.map(async (item) => {
-         const product = await this.productsService.updateProduct(
-           item.productId,
-           item.quantity
-         );
-         return {
-           productId: item.productId,
-           quantity: item.quantity,
-           price: product.price, // This will now be resolved
-         };
-       })
-     );
-     return orderItems;
-  }
   findAll() {
     return `This action returns all orders`;
   }

@@ -12,7 +12,7 @@ import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { GoogleOAuthModule } from './googleoauth/googleoauth.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-
+import { MailModule } from './common/mail/mail.module';
 
 @Module({
   imports: [
@@ -21,6 +21,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     UsersModule,
     LoggerModule,
     EventEmitterModule.forRoot(), // Initialize the event emitter
+    AuthModule,
+    ProductsModule,
+    OrdersModule,
+    GoogleOAuthModule,
+    MailModule,
     ConfigModule.forRoot({
       isGlobal: true, // Makes the ConfigModule available globally but I didnt use the config service tho. process.env >>>>
     }),
@@ -41,10 +46,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         limit: 100,
       },
     ]),
-    AuthModule,
-    ProductsModule,
-    OrdersModule,
-    GoogleOAuthModule,
   ],
   controllers: [AppController],
   providers: [

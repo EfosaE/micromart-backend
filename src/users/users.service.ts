@@ -4,13 +4,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from 'src/auth/dto/signIn-user.dto';
-
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserCreatedEvent } from './events/user-created.event';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly logger: MyLoggerService,
-    private db: DatabaseService
+    private db: DatabaseService,
+    private eventEmitter: EventEmitter2
   ) {}
 
   async createUser(user: CreateUserDto) {
@@ -18,7 +20,7 @@ export class UsersService {
       data: {
         name: user.name,
         email: user.email,
-        password: user.password, 
+        password: user.password,
         roles: [user.role], // Start with the initial role
         activeRole: user.role, // Set active role to initial role
       },
@@ -32,12 +34,14 @@ export class UsersService {
         updatedAt: true,
       },
     });
+
+    this.eventEmitter.emit('user.created', new UserCreatedEvent(newUser.name, newUser.email))
     return newUser;
   }
 
   async findAll() {
-    const users = await this.db.user.findMany()
-    return {length:users.length, users};
+    const users = await this.db.user.findMany();
+    return { length: users.length, users };
   }
 
   async findOne(credentials: LoginDto) {
@@ -66,7 +70,4 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
-
- 
-
 }

@@ -15,28 +15,9 @@ export type FilterOptions = {
   maxPrice?: number; // Maximum price
 };
 
-// export interface OrderItem {
-//   productId: string;
-//   orderId: string;
-//   quantity: number;
-//   price: number;
-//   order?: Order; // Optional relation to Order
-//   product?: Product; // Optional relation to Product
-// }
+// Define specific types for the context data
+export type WelcomeEmailContext = {
+  name: string;
+  dashboardLink: string;
+}
 
-
-// export interface Order {
-//   id: string;
-//   totalAmount: number;
-//   buyerId: string;
-//   orderItems?: OrderItem[]; // Optional relation to OrderItems
-// }
-
-// export interface Product {
-//   id: string;
-//   name: string;
-//   price: number;
-//   quantity: number;
-//   description?: string; // Optional field
-//   // Add other fields from your Product schema
-// }
