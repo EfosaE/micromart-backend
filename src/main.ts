@@ -11,7 +11,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors({
-    origin: ['http://localhost:3000'], // Allow your frontend domain
+    origin: ['http://localhost:3000', 'https://micromart-web-app.vercel.app'], // Allow your frontend domain
     credentials: true, // Allow cookies to be sent
   });
   // Use cookie-parser middleware
@@ -42,6 +42,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();
