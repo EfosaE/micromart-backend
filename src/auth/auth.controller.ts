@@ -27,12 +27,12 @@ export class AuthController {
 
   @SkipAuth()
   @Post('login')
-  @ApiOperation({ summary: 'Logs the user in and provides tokens' })
+  @ApiOperation({
+    summary: 'Logs the user in and set the tokens in an http-only cookie ',
+  })
   @ApiResponse({
     schema: {
-      example: {
-        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-      },
+      example: { message: `user@email.com logged in sucessfully` },
     },
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
@@ -51,22 +51,20 @@ export class AuthController {
   // refresh token endpoint
   @SkipAuth()
   @Post('refresh')
-  async refresh(@Req() req: Request, res: Response): Promise<Response> {
+  async refresh(@Req() req: Request): Promise<{ accessToken: string }> {
     console.log(req.cookies);
     const refreshToken = req.cookies['refresh_token']; // Securely retrieve refresh token from cookies
 
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token missing: Please login');
     }
-
     // Validate the refresh token
     const user = await this.authService.validateRefreshToken(refreshToken);
     console.log('user', user);
     const formattedUser = { id: user.sub, name: user.username };
     const newAccessToken =
       await this.authService.createAccessToken(formattedUser);
-    this.authService.setTokenInCookie('access_token', newAccessToken, res);
 
-    return res.status(200);
+    return { accessToken: newAccessToken };
   }
 }

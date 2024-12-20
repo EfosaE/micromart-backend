@@ -60,20 +60,19 @@ export class AuthService {
     const requiredUserPayload = { id, name };
     const accessToken = await this.createAccessToken(requiredUserPayload);
     const refreshToken = await this.createRefreshToken(requiredUserPayload);
-    this.setTokenInCookie('access_token', accessToken, res);
-    this.setTokenInCookie('refresh_token', refreshToken, res);
-
+    this.setRefreshTokenCookie(refreshToken, res);
     this.logger.log(`A user: ${user.email} logged in`, AuthService.name);
     // Explicitly return the access token in the response body
-    return res
-      .status(200)
-      .json({ message: `${user.email} logged in sucessfully` });
+    return res.status(200).json({ accessToken });
   }
 
   // Create access token
   async createAccessToken(user: TokenPayload): Promise<string> {
     const payload = { sub: user.id, username: user.name };
-    const token = await this.jwtService.signAsync(payload);
+    const token = await this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: '1m',
+    });
     console.log(token);
     return token;
   }
@@ -88,13 +87,13 @@ export class AuthService {
   }
 
   // set refreshToken
-  setTokenInCookie(tokenName: string, token: string, res: Response) {
+  setRefreshTokenCookie(token: string, res: Response) {
     // Set the refresh token in an HTTP-only cookie
-    res.cookie(tokenName, token, {
+    res.cookie('refresh_token', token, {
       httpOnly: true, // Makes the cookie inaccessible to JavaScript
       secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'strict', // Protects against CSRF attacks
-      maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
+      sameSite: 'none', // allow for CORS
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     });
   }
   // Validate refresh token
@@ -106,20 +105,22 @@ export class AuthService {
       });
       return payload;
     } catch {
-      throw new UnauthorizedException('Invalid or expired refresh token, please login');
+      throw new ForbiddenException(
+        'Invalid or expired refresh token, please login'
+      );
     }
   }
 
   // extract userID
   extractUserID(req: Request): string {
-    const authToken = req.cookies?.access_token;// Extract token from Cookie
+    const authToken = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
     if (!authToken) {
       throw new UnauthorizedException('Missing token: please login');
     }
     try {
       // Verify the token and decode it
       const decodedToken = this.jwtService.verify(authToken);
-      return decodedToken.sub; // The userID resides in the sub property of the payload
+      return decodedToken.sub; //ID is stored in the payload.sub
     } catch (error) {
       if (error) throw new ForbiddenException('Invalid or expired token');
     }

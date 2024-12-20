@@ -21,8 +21,8 @@ export class UsersService {
         name: user.name,
         email: user.email,
         password: user.password,
-        roles: [user.role], // Start with the initial role
-        activeRole: user.role, // Set active role to initial role
+        roles: user.role ? [user.role] : ['USER'], // Default to 'user' if user.role is not set
+        activeRole: user.role || 'USER', // Default to 'user' if user.role is not set
       },
       select: {
         id: true,
@@ -35,7 +35,10 @@ export class UsersService {
       },
     });
 
-    this.eventEmitter.emit('user.created', new UserCreatedEvent(newUser.name, newUser.email))
+    this.eventEmitter.emit(
+      'user.created',
+      new UserCreatedEvent(newUser.name, newUser.email)
+    );
     return newUser;
   }
 

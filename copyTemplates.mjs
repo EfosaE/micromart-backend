@@ -34,4 +34,3 @@ fs.readdirSync(source).forEach((file) => {
 //     "test:e2e": "jest --config ./test/jest-e2e.json"
 //   },
 
-// I am using nest but the nest build builds the dist folder shey and after the build i say copy the template but it still gives dist/common/mail/templates... not found error when i sonpm run s

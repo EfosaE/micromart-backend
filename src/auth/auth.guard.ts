@@ -10,7 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from 'src/decorators/skip-auth';
 
-
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -29,9 +28,9 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromCookie(request);
+    const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException('Please login');
+      throw new UnauthorizedException('No access token, please login');
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
@@ -40,16 +39,20 @@ export class AuthGuard implements CanActivate {
 
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request['user'] = payload;
+      request['user'] = {
+        id: payload.sub,
+        name: payload.username,
+        iat: payload.iat,
+        exp: payload.exp,
+      };
     } catch {
       throw new ForbiddenException('Token expired...');
     }
     return true;
   }
 
-  private extractTokenFromCookie(request: Request): string | undefined {
-    const accessToken = request.cookies?.access_token; 
-    console.log(accessToken)
-    return accessToken; 
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }

@@ -10,7 +10,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:3000'], // Allow your frontend domain
+    credentials: true, // Allow cookies to be sent
+  });
   // Use cookie-parser middleware
   app.use(cookieParser());
   // Global ValidationPipe for DTO validation
@@ -39,10 +42,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3001);
 }
 bootstrap();
-
-
-
-

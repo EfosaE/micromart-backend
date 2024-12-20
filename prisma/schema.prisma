@@ -14,7 +14,7 @@ model User {
   password   String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  activeRole UserRole
+  activeRole UserRole   @default(USER)
   roles      UserRole[] @default([])
   cart       Cart?
   orders     Order[]
