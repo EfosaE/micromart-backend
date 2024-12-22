@@ -62,8 +62,8 @@ export class AuthService {
     const refreshToken = await this.createRefreshToken(requiredUserPayload);
     this.setRefreshTokenCookie(refreshToken, res);
     this.logger.log(`A user: ${user.email} logged in`, AuthService.name);
-    // Explicitly return the access token in the response body
-    return res.status(200).json({ accessToken });
+    // Explicitly return the access token and user in the response body
+    return res.status(200).json({ accessToken, user: requiredUserPayload });
   }
 
   // Create access token
@@ -71,7 +71,7 @@ export class AuthService {
     const payload = { sub: user.id, username: user.name };
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: '4m',
+      expiresIn: '15m',
     });
     return token;
   }
@@ -104,7 +104,7 @@ export class AuthService {
       });
       return payload;
     } catch {
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         'Invalid or expired refresh token, please login'
       );
     }

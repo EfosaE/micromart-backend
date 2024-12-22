@@ -14,6 +14,10 @@ import { Request, Response } from 'express';
 import { SkipAuth } from 'src/decorators/skip-auth';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginDto } from './dto/signIn-user.dto';
+import { User } from '@prisma/client';
+
+// Define the type to extract only the `id` and `name`
+type UserData = Pick<User, 'id' | 'name'>;
 
 @Controller('auth')
 export class AuthController {
@@ -45,14 +49,17 @@ export class AuthController {
   getProfile(@Req() req: Request) {
     // Access the user data that was attached in middleware
     const user = req['user'];
+    console.log('BE called !!', user);
     return user;
   }
 
-  // refresh token endpoint
+  // refresh token endpoint Test
   @SkipAuth()
-  @Post('refresh')
-  async refresh(@Req() req: Request): Promise<{ accessToken: string }> {
-    console.log(req.cookies);
+  @Get('refresh')
+  async refreshEndpoint(
+    @Req() req: Request
+  ): Promise<{ accessToken: string; user: UserData }> {
+    console.log('Cookies from Express:', req.cookies);
     const refreshToken = req.cookies['refresh_token']; // Securely retrieve refresh token from cookies
 
     if (!refreshToken) {
@@ -65,6 +72,6 @@ export class AuthController {
     const newAccessToken =
       await this.authService.createAccessToken(formattedUser);
 
-    return { accessToken: newAccessToken };
+    return { accessToken: newAccessToken, user: formattedUser };
   }
 }
