@@ -56,8 +56,8 @@ export class AuthService {
     }
 
     // Extract id and email
-    const { id, name } = user;
-    const requiredUserPayload = { id, name };
+    const { id, name, activeRole } = user;
+    const requiredUserPayload = { id, name, activeRole };
     const accessToken = await this.createAccessToken(requiredUserPayload);
     const refreshToken = await this.createRefreshToken(requiredUserPayload);
     this.setRefreshTokenCookie(refreshToken, res);
@@ -68,7 +68,7 @@ export class AuthService {
 
   // Create access token
   async createAccessToken(user: TokenPayload): Promise<string> {
-    const payload = { sub: user.id, username: user.name };
+    const payload = { sub: user.id, username: user.name, role: user.activeRole };
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
       expiresIn: '15m',
@@ -78,7 +78,11 @@ export class AuthService {
 
   // Create refresh token
   async createRefreshToken(user: TokenPayload) {
-    const payload = { sub: user.id, username: user.name };
+     const payload = {
+       sub: user.id,
+       username: user.name,
+       role: user.activeRole,
+     };
     return this.jwtService.sign(payload, {
       secret: process.env.REFRESH_TOKEN,
       expiresIn: '2d',

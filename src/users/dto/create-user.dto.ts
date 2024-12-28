@@ -5,7 +5,7 @@ import {
   IsEnum,
   IsOptional,
 } from 'class-validator';
-import { UserRole } from 'src/interfaces/types';
+import { Role } from 'src/interfaces/types';
 
 export class CreateUserDto {
   @IsEmail()
@@ -15,8 +15,8 @@ export class CreateUserDto {
   name: string;
 
   @IsOptional()
-  @IsEnum(UserRole, { message: 'Role must be one of: ADMIN, USER, SELLER' })
-  role?: UserRole;
+  @IsEnum(Role, { message: 'Role must be one of: ADMIN, USER, SELLER' })
+  role?: Role;
 
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters long' })

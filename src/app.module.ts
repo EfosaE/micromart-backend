@@ -13,6 +13,8 @@ import { OrdersModule } from './orders/orders.module';
 import { GoogleOAuthModule } from './googleoauth/googleoauth.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MailModule } from './common/mail/mail.module';
+import { CloudinaryModule } from './common/cloudinary/cloudinary.module';
+import { AuthGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { MailModule } from './common/mail/mail.module';
     OrdersModule,
     GoogleOAuthModule,
     MailModule,
+    CloudinaryModule,
     ConfigModule.forRoot({
       isGlobal: true, // Makes the ConfigModule available globally but I didnt use the config service tho. process.env >>>>
     }),
@@ -53,6 +56,10 @@ import { MailModule } from './common/mail/mail.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })

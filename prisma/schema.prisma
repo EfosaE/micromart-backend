@@ -25,6 +25,7 @@ model Product {
   id          String      @id @default(uuid())
   name        String
   description String?
+  imgUrl      String
   price       Float
   quantity    Int
   createdAt   DateTime    @default(now())

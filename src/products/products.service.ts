@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { ProductDTO } from './dto/create-product.dto';
+import {  ProductType } from './dto/create-product.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
 import { FilterOptions } from 'src/interfaces/types';
 
@@ -10,7 +10,7 @@ export class ProductsService {
     private readonly logger: MyLoggerService,
     private db: DatabaseService
   ) {}
-  async createProduct(product: ProductDTO, userID: string) {
+  async createProduct(product: ProductType, userID: string) {
     const newProduct = await this.db.product.create({
       data: {
         ...product,
@@ -19,7 +19,7 @@ export class ProductsService {
         },
       },
     });
-
+    this.logger.log(`product:${newProduct.id} created by ${userID} `);
     return newProduct;
   }
   async getProductByID(productId: string) {

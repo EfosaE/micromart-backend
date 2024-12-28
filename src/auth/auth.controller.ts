@@ -68,7 +68,7 @@ export class AuthController {
     // Validate the refresh token
     const user = await this.authService.validateRefreshToken(refreshToken);
     console.log('user', user);
-    const formattedUser = { id: user.sub, name: user.username };
+    const formattedUser = { id: user.sub, name: user.username, activeRole: user.role };
     const newAccessToken =
       await this.authService.createAccessToken(formattedUser);
 

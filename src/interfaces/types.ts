@@ -1,4 +1,6 @@
-export enum UserRole {
+import { $Enums } from '@prisma/client';
+
+export enum Role {
   ADMIN = 'ADMIN',
   USER = 'USER',
   SELLER = 'SELLER',
@@ -7,6 +9,7 @@ export enum UserRole {
 export interface TokenPayload {
   id: string;
   name: string;
+  activeRole: $Enums.UserRole; // prisma wants you to use theirs
 }
 
 export type FilterOptions = {
@@ -19,5 +22,4 @@ export type FilterOptions = {
 export type WelcomeEmailContext = {
   name: string;
   dashboardLink: string;
-}
-
+};

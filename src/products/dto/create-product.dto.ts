@@ -17,6 +17,11 @@ export class ProductDTO {
   @IsOptional()
   description?: string;
 
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  imgUrl?: string;
+
   @IsInt()
   @IsPositive()
   price: number;
@@ -30,3 +35,12 @@ export class ProductDTO {
   @IsNotEmpty()
   tags: string[];
 }
+
+export type ProductType = {
+  name: string;
+  description?: string;
+  imgUrl: string; // imgUrl is option on form submission but not on create product
+  price: number;
+  quantity: number;
+  tags: string[];
+};
