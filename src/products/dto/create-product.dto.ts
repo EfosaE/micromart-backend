@@ -2,11 +2,16 @@ import {
   IsString,
   IsOptional,
   IsNotEmpty,
-  IsNumber,
   IsArray,
   IsInt,
   IsPositive,
+  IsEnum,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
+export enum ImgType {
+  URL = 'URL',
+  FILE = 'FILE',
+}
 
 export class ProductDTO {
   @IsString()
@@ -18,20 +23,28 @@ export class ProductDTO {
   description?: string;
 
   @IsString()
+  @IsNotEmpty()
+  @IsEnum(ImgType)
+  imgType: ImgType;
+
+  @IsString()
   @IsOptional()
   @IsNotEmpty()
   imgUrl?: string;
 
   @IsInt()
   @IsPositive()
+  @Transform(({ value }) => parseFloat(value)) // Transform price to number
   price: number;
 
-  @IsNumber()
-  @IsNotEmpty()
+  @IsInt()
+  @IsPositive()
+  @Transform(({ value }) => parseInt(value, 10)) // Transform quantity to number
   quantity: number;
 
   @IsArray()
-  @IsString({ each: true }) // Ensures each element in the array is a string
+  @IsString({ each: true })
+  @Transform(({ value }) => value.split(',').map((tag: string) => tag.trim())) // Transform tags to an array
   @IsNotEmpty()
   tags: string[];
 }
@@ -39,7 +52,8 @@ export class ProductDTO {
 export type ProductType = {
   name: string;
   description?: string;
-  imgUrl: string; // imgUrl is option on form submission but not on create product
+  imgType: ImgType;
+  imgUrl: string; // imgUrl is needed but it can come from an uploaded file hence this type was created.
   price: number;
   quantity: number;
   tags: string[];

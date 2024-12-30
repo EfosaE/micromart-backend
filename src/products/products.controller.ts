@@ -39,20 +39,14 @@ export class ProductsController {
 
   @Post()
   @Roles(Role.ADMIN, Role.SELLER)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   async createProduct(
-    @UploadedFile() // new ParseFilePipe({
-    //   validators: [
-    file //     new MaxFileSizeValidator({ maxSize: 50000 }),
-    //     new FileTypeValidator({
-    //       fileType: /^(image\/jpeg|image\/png|image\/jpg)$/,
-    //     }),
-    //   ],
-    // })          //file is optional this doesnt allow that.
-    : Express.Multer.File,
+    @UploadedFile()
+    file: Express.Multer.File,
     @Body() productDetails: ProductDTO,
     @Req() req
   ) {
+    console.log(productDetails);
     const { imgUrl } = productDetails;
     const userID = this.authService.extractUserID(req);
     // Ensure at least one of file or imgUrl is provided
@@ -67,7 +61,7 @@ export class ProductsController {
         file,
         'micromart'
       );
-
+      console.log(uploadResult);
       // Update productDetails with the uploaded image URL
       productDetails.imgUrl = uploadResult.secure_url;
     }

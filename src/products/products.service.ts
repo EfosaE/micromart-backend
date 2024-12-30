@@ -4,6 +4,7 @@ import {  ProductType } from './dto/create-product.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
 import { FilterOptions } from 'src/interfaces/types';
 
+
 @Injectable()
 export class ProductsService {
   constructor(
@@ -15,11 +16,11 @@ export class ProductsService {
       data: {
         ...product,
         user: {
-          connect: { id: userID }, // Automatically link the product to the user(seller)
+          connect: { id: userID }, //  link the product to the user(seller or admin)
         },
       },
     });
-    this.logger.log(`product:${newProduct.id} created by ${userID} `);
+    this.logger.log(`product:${newProduct.id} created by ${userID} `, ProductsService.name);
     return newProduct;
   }
   async getProductByID(productId: string) {

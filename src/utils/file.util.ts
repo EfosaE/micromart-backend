@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 
 
 // Max file size (in bytes)
-const MAX_FILE_SIZE = 50000; // 50KB
+const MAX_FILE_SIZE = 500000; // 500KB
 const ALLOWED_FILE_TYPES = /^(image\/jpeg|image\/png|image\/jpg)$/;
 
 export function validateFile(file: Express.Multer.File) {

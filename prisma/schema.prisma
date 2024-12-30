@@ -25,6 +25,7 @@ model Product {
   id          String      @id @default(uuid())
   name        String
   description String?
+  imgType     ImgType
   imgUrl      String
   price       Float
   quantity    Int
@@ -102,4 +103,9 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   RETURNED
+}
+
+enum ImgType {
+  URL
+  FILE
 }

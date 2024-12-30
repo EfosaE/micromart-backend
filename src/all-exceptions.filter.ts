@@ -11,7 +11,7 @@ import {
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 import { MyLoggerService } from './logger/logger.service';
-import { handlePrismaError } from './utils/utils';
+import { handlePrismaError } from './utils/prisma.util';
 
 type MyResponseObj = {
   statusCode: number;
