@@ -22,6 +22,7 @@ import { Role } from 'src/interfaces/types';
 import { RolesGuard } from 'src/common/role.guard';
 import { validateFile } from 'src/utils/file.util';
 
+
 @ApiTags('Products') // Group this controller under "Products" in Swagger
 @UseGuards(RolesGuard) // Apply RolesGuard only where needed
 @Controller('products')
@@ -36,6 +37,7 @@ export class ProductsController {
   getAllProducts(@Query() query: ProductQueryDto) {
     return this.productsService.getFilteredProducts(query);
   }
+
 
   @Post()
   @Roles(Role.ADMIN, Role.SELLER)

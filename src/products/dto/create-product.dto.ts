@@ -6,13 +6,22 @@ import {
   IsInt,
   IsPositive,
   IsEnum,
+  ValidateNested,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 export enum ImgType {
   URL = 'URL',
   FILE = 'FILE',
 }
+class TagDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
+  @IsString()
+  @IsNotEmpty()
+  tagType: string;
+}
 export class ProductDTO {
   @IsString()
   @IsNotEmpty()
@@ -43,10 +52,9 @@ export class ProductDTO {
   quantity: number;
 
   @IsArray()
-  @IsString({ each: true })
-  @Transform(({ value }) => value.split(',').map((tag: string) => tag.trim())) // Transform tags to an array
-  @IsNotEmpty()
-  tags: string[];
+  @ValidateNested({ each: true })
+  @Type(() => TagDto)
+  tags: TagDto[];
 }
 
 export type ProductType = {
@@ -56,5 +64,5 @@ export type ProductType = {
   imgUrl: string; // imgUrl is needed but it can come from an uploaded file hence this type was created.
   price: number;
   quantity: number;
-  tags: string[];
+  tags: { name: string; tagType: string }[];
 };

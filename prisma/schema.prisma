@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+
+  url = env("DATABASE_URL")
 }
 
 model User {
@@ -31,13 +32,23 @@ model Product {
   quantity    Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  tags        String[]
+  tags        Tag[]
   sellerId    String
-  CartItem    CartItem[]
-  OrderItem   OrderItem[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
   user        User        @relation(fields: [sellerId], references: [id])
 
   @@unique([name, sellerId])
+}
+
+model Tag {
+  id      Int    @id @default(autoincrement())
+  name    String
+  tagType String
+
+  Product Product[]
+
+  @@unique([name, tagType])
 }
 
 model Order {
@@ -108,4 +119,15 @@ enum OrderStatus {
 enum ImgType {
   URL
   FILE
+}
+
+enum TagType {
+  GeneralProductTags
+  CategoryBasedTags
+  ConditionBasedTags
+  SeasonalTags
+  PriceBasedTags
+  UsageBasedTags
+  DemographicTags
+  MaterialQualityTags
 }
