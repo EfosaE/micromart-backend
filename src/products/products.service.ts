@@ -24,7 +24,10 @@ export class ProductsService {
         tags: {
           connect: createdTags.map((tag) => ({ id: tag.id })),
         },
-      },
+      }, select: {
+        id: true, 
+        name: true,
+      }
     });
     this.logger.log(
       `product:${newProduct.id} created by ${userID} `,
@@ -84,19 +87,20 @@ export class ProductsService {
     return { length: products.length, products };
   }
 
-  async getProductsByTag(tag: string, tagType: string) {
+  async getProductsByTags(tags: string[]) {
     const products = await this.db.product.findMany({
       where: {
         tags: {
           some: {
-            name: tag,
-            tagType: tagType, // Filtering by both name and tagType
+            name: {
+              in: tags,
+            },
           },
         },
       },
     });
 
-    return { length: products.length, tag, products };
+    return { length: products.length, tags, products };
   }
 
   async createTags(tags: { name: string; tagType: string }[]) {

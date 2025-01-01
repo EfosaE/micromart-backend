@@ -130,4 +130,5 @@ enum TagType {
   UsageBasedTags
   DemographicTags
   MaterialQualityTags
+  Others
 }

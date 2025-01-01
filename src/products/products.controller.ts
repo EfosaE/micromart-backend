@@ -21,6 +21,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/interfaces/types';
 import { RolesGuard } from 'src/common/role.guard';
 import { validateFile } from 'src/utils/file.util';
+import { SkipAuth } from 'src/decorators/skip-auth';
 
 
 @ApiTags('Products') // Group this controller under "Products" in Swagger
@@ -33,12 +34,17 @@ export class ProductsController {
     private readonly cloudinaryService: CloudinaryService
   ) {}
 
+  @SkipAuth()
   @Get()
   getAllProducts(@Query() query: ProductQueryDto) {
+    const { tags, minPrice, maxPrice } = query 
+    if (tags && !minPrice && !maxPrice) {
+      return this.productsService.getProductsByTags(tags)
+    }
     return this.productsService.getFilteredProducts(query);
   }
 
-
+ 
   @Post()
   @Roles(Role.ADMIN, Role.SELLER)
   @UseInterceptors(FileInterceptor('image'))
