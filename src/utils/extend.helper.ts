@@ -5,6 +5,7 @@ const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 10);
 
 import { INestApplication } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { withOptimize } from '@prisma/extension-optimize';
 
 function extendPrismaClient() {
   const prisma = new PrismaClient({
@@ -12,6 +13,7 @@ function extendPrismaClient() {
   });
   // const logger = new MyLoggerService();
   return prisma
+    .$extends(withOptimize({ apiKey: process.env.OPTIMIZE_API_KEY }))
     .$extends({
       client: {
         async onModuleInit() {

@@ -24,10 +24,11 @@ export class ProductsService {
         tags: {
           connect: createdTags.map((tag) => ({ id: tag.id })),
         },
-      }, select: {
-        id: true, 
+      },
+      select: {
+        id: true,
         name: true,
-      }
+      },
     });
     this.logger.log(
       `product:${newProduct.id} created by ${userID} `,
@@ -82,6 +83,13 @@ export class ProductsService {
             : undefined,
         ].filter(Boolean),
       },
+      select: {
+        id: true,
+        name: true,
+        imgUrl: true,
+        price: true,
+        quantity: true,
+      },
     });
 
     return { length: products.length, products };
@@ -97,6 +105,13 @@ export class ProductsService {
             },
           },
         },
+      },
+      select: {
+        id: true,
+        name: true,
+        imgUrl: true,
+        price: true,
+        quantity: true,
       },
     });
 
@@ -115,7 +130,7 @@ export class ProductsService {
         where: {
           name_tagType: {
             name,
-            tagType,
+            tagType: tagType as $Enums.TagType,
           },
         },
 

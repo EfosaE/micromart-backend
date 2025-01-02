@@ -44,7 +44,7 @@ model Product {
 model Tag {
   id      Int    @id @default(autoincrement())
   name    String
-  tagType String
+  tagType TagType
 
   Product Product[]
 
