@@ -1,9 +1,9 @@
 import { $Enums } from '@prisma/client';
 
 export enum Role {
-  ADMIN = 'ADMIN',
   USER = 'USER',
   SELLER = 'SELLER',
+  ADMIN = 'ADMIN',
 }
 
 export interface TokenPayload {
@@ -23,3 +23,19 @@ export type WelcomeEmailContext = {
   name: string;
   dashboardLink: string;
 };
+
+export interface User {
+  name: string;
+  email: string;
+  password: string;
+  role?: 'USER';
+}
+
+export interface Seller {
+  name: string;
+  email: string;
+  password: string;
+  role: 'SELLER'; // Ensure that the role is explicitly 'SELLER' for a seller
+  categoryName: string;
+  businessName: string;
+}

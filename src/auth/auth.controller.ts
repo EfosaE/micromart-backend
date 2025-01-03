@@ -15,6 +15,7 @@ import { SkipAuth } from 'src/decorators/skip-auth';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginDto } from './dto/signIn-user.dto';
 import { User } from '@prisma/client';
+import { CreateSellerDto } from 'src/users/dto/create-seller.dto';
 
 // Define the type to extract only the `id` and `name`
 type UserData = Pick<User, 'id' | 'name'>;
@@ -24,11 +25,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @SkipAuth()
-  @Post('signup')
-  registerUser(@Body() createUserDto: CreateUserDto) {
-    return this.authService.signUpUser(createUserDto);
+  @Post('signup/user')
+  registerUser(@Body() user: CreateUserDto) {
+    return this.authService.signUpUser(user);
   }
-
+  @SkipAuth()
+  @Post('signup/seller')
+  registerSeller(@Body() seller: CreateSellerDto) {
+    return this.authService.signUpSeller(seller);
+  }
   @SkipAuth()
   @Post('login')
   @ApiOperation({
@@ -68,7 +73,11 @@ export class AuthController {
     // Validate the refresh token
     const user = await this.authService.validateRefreshToken(refreshToken);
     console.log('user', user);
-    const formattedUser = { id: user.sub, name: user.username, activeRole: user.role };
+    const formattedUser = {
+      id: user.sub,
+      name: user.username,
+      activeRole: user.role,
+    };
     const newAccessToken =
       await this.authService.createAccessToken(formattedUser);
 

@@ -20,6 +20,23 @@ model User {
   cart       Cart?
   orders     Order[]
   products   Product[]
+  seller     Seller? // A user can have a seller profile, but it is optional
+}
+
+model Seller {
+  sellerId     String   @id
+  categoryId   Int
+  businessName String
+  category     Category @relation(fields: [categoryId], references: [id])
+  user         User     @relation(fields: [sellerId], references: [id])
+
+  @@unique([sellerId, categoryId]) // Ensures that a seller can only have one category
+}
+
+model Category {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  seller Seller[] // A category can be associated with many sellers
 }
 
 model Product {
@@ -42,7 +59,7 @@ model Product {
 }
 
 model Tag {
-  id      Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   name    String
   tagType TagType
 

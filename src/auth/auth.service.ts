@@ -10,7 +10,8 @@ import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/signIn-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { TokenPayload } from 'src/interfaces/types';
+import { Seller, TokenPayload, User } from 'src/interfaces/types';
+import { CreateSellerDto } from 'src/users/dto/create-seller.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,16 +28,31 @@ export class AuthService {
     );
 
     const updatedUserObject = { ...userDetails, password: hashedPassword };
-    const newUser = await this.user.createUser(updatedUserObject);
+    const newUser = await this.user.registerUser(updatedUserObject as User);
 
     this.logger.log(
-      `A new user ${newUser.email} was created`,
+      `A new user ${newUser.email} of role ${newUser.activeRole} was created`,
       AuthService.name
     );
 
     return `${newUser.email} created successfully`;
   }
 
+  async signUpSeller(userDetails: CreateSellerDto) {
+    const hashedPassword = await this.hashService.hashPassword(
+      userDetails.password
+    );
+
+    const updatedUserObject = { ...userDetails, password: hashedPassword };
+    const newUser = await this.user.registerUser(updatedUserObject as Seller);
+
+    this.logger.log(
+      `A new user ${newUser.email} of role ${newUser.activeRole} was created`,
+      AuthService.name
+    );
+
+    return `${newUser.email} created successfully`;
+  }
   async login(userCredentials: LoginDto, res: Response) {
     const { password } = userCredentials;
     const user = await this.user.findOne(userCredentials);
@@ -68,7 +84,11 @@ export class AuthService {
 
   // Create access token
   async createAccessToken(user: TokenPayload): Promise<string> {
-    const payload = { sub: user.id, username: user.name, role: user.activeRole };
+    const payload = {
+      sub: user.id,
+      username: user.name,
+      role: user.activeRole,
+    };
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
       expiresIn: '15m',
@@ -78,11 +98,11 @@ export class AuthService {
 
   // Create refresh token
   async createRefreshToken(user: TokenPayload) {
-     const payload = {
-       sub: user.id,
-       username: user.name,
-       role: user.activeRole,
-     };
+    const payload = {
+      sub: user.id,
+      username: user.name,
+      role: user.activeRole,
+    };
     return this.jwtService.sign(payload, {
       secret: process.env.REFRESH_TOKEN,
       expiresIn: '2d',
