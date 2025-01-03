@@ -5,21 +5,21 @@ import {
   MinLength,
   Validate,
 } from 'class-validator';
-import { IsSellerRole } from 'src/common/role.validator';
+import { IsVendorRole } from 'src/common/role.validator';
 import { Role } from 'src/interfaces/types';
 
 
-export class CreateSellerDto {
+export class CreateVendorDto {
   @IsEmail()
   email: string;
 
   @IsString()
   name: string;
 
-
-  
-  @IsEnum(Role, { message: 'Role must be of SELLER' }) // Only allow USER if provided
-  @Validate(IsSellerRole, { message: 'Role must be SELLER, no other role allowed' }) // Custom validation for role
+  @IsEnum(Role, { message: 'Role must be of VENDOR' }) // Only allow USER if provided
+  @Validate(IsVendorRole, {
+    message: 'Role must be VENDOR, no other role allowed',
+  }) // Custom validation for role
   role: Role;
 
   @IsString()

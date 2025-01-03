@@ -20,23 +20,23 @@ model User {
   cart       Cart?
   orders     Order[]
   products   Product[]
-  seller     Seller? // A user can have a seller profile, but it is optional
+  vendor     Vendor? // A user can have a vendor profile, but it is optional
 }
 
-model Seller {
-  sellerId     String   @id
+model Vendor {
+  vendorId     String   @id
   categoryId   Int
   businessName String
   category     Category @relation(fields: [categoryId], references: [id])
-  user         User     @relation(fields: [sellerId], references: [id])
+  user         User     @relation(fields: [vendorId], references: [id])
 
-  @@unique([sellerId, categoryId]) // Ensures that a seller can only have one category
+  @@unique([vendorId, categoryId]) // Ensures that a vendor can only have one category
 }
 
 model Category {
   id     Int      @id @default(autoincrement())
   name   String   @unique
-  seller Seller[] // A category can be associated with many sellers
+  vendor Vendor[] // A category can be associated with many vendors
 }
 
 model Product {
@@ -50,12 +50,12 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   tags        Tag[]
-  sellerId    String
+  vendorId    String
   cartItems   CartItem[]
   orderItems  OrderItem[]
-  user        User        @relation(fields: [sellerId], references: [id])
+  user        User        @relation(fields: [vendorId], references: [id])
 
-  @@unique([name, sellerId])
+  @@unique([name, vendorId])
 }
 
 model Tag {
@@ -114,7 +114,7 @@ model CartItem {
 enum UserRole {
   ADMIN
   USER
-  SELLER
+  VENDOR
 }
 
 enum PaymentStatus {

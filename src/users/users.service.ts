@@ -6,7 +6,7 @@ import { LoginDto } from 'src/auth/dto/signIn-user.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserCreatedEvent } from './events/user-created.event';
 
-import { Seller, User } from 'src/interfaces/types';
+import { Vendor, User } from 'src/interfaces/types';
 
 @Injectable()
 export class UsersService {
@@ -16,13 +16,13 @@ export class UsersService {
     private eventEmitter: EventEmitter2
   ) {}
 
-  async registerUser(user: User | Seller) {
+  async registerUser(user: User | Vendor) {
     const { role } = user;
     if (!role || role === 'USER') {
       return this.createUser(user as User);
-    } else if (user.role === 'SELLER') {
-      // create seller from the newUser
-      return this.createUserWithSellerProfile(user as Seller);
+    } else if (user.role === 'VENDOR') {
+      // create vendor from the newUser
+      return this.createUserWithVendorProfile(user as Vendor);
     }
   }
 
@@ -52,9 +52,9 @@ export class UsersService {
     );
     return newUser;
   }
-  async createUserWithSellerProfile(user: Seller) {
+  async createUserWithVendorProfile(user: Vendor) {
     // Step 1: Create the user with the specified role
-    const newSeller = await this.db.user.create({
+    const newVendor = await this.db.user.create({
       data: {
         name: user.name,
         email: user.email,
@@ -73,10 +73,10 @@ export class UsersService {
       },
     });
 
-    // Step 2: If the user is a seller, create seller details
-    if (!(user.role === 'SELLER')) {
+    // Step 2: If the user is a vendor, create vendor details
+    if (!(user.role === 'VENDOR')) {
       throw new BadRequestException(
-        'Your role must be set to SELLER to register as a seller'
+        'Your role must be set to VENDOR to register as a vendor'
       );
     }
 
@@ -89,22 +89,22 @@ export class UsersService {
       throw new Error('Category not found');
     }
 
-    // Create seller details
-    const sellerDetails = await this.db.seller.create({
+    // Create vendor details
+    const vendorDetails = await this.db.vendor.create({
       data: {
         user: {
-          connect: { id: newSeller.id },
-        }, //  link the seller to the user
+          connect: { id: newVendor.id },
+        }, //  link the vendor to the user
         category: {
           connect: { id: category.id },
-        }, //  link the seller to the user
-        businessName: user.businessName, // Business name for the seller
+        }, //  link the vendor to the user
+        businessName: user.businessName, // Business name for the vendor
       },
     });
 
-    console.log('Seller profile created:', sellerDetails);
+    console.log('vendor profile created:', vendorDetails);
 
-    return newSeller;
+    return newVendor;
   }
 
   async findAll() {

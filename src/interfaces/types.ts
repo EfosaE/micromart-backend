@@ -2,7 +2,7 @@ import { $Enums } from '@prisma/client';
 
 export enum Role {
   USER = 'USER',
-  SELLER = 'SELLER',
+  VENDOR = 'VENDOR',
   ADMIN = 'ADMIN',
 }
 
@@ -31,11 +31,11 @@ export interface User {
   role?: 'USER';
 }
 
-export interface Seller {
+export interface Vendor {
   name: string;
   email: string;
   password: string;
-  role: 'SELLER'; // Ensure that the role is explicitly 'SELLER' for a seller
+  role: 'VENDOR'; // Ensure that the role is explicitly 'VENDOR' for a vendor
   categoryName: string;
-  businessName: string;
+  businessName?: string;
 }

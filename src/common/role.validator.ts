@@ -24,16 +24,16 @@ export class IsUserRole implements ValidatorConstraintInterface {
   }
 }
 
-// Validator for 'SELLER' role
+// Validator for 'VENDOR' role
 @ValidatorConstraint({ async: false })
-export class IsSellerRole implements ValidatorConstraintInterface {
+export class IsVendorRole implements ValidatorConstraintInterface {
   validate(role: Role, args: ValidationArguments) {
 
-    // If role is anything other than 'SELLER', reject it
-    return role === Role.SELLER;
+    // If role is anything other than 'VENDOR', reject it
+    return role === Role.VENDOR;
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `Role '${args.value}' is invalid. Only 'SELLER' is allowed for this field.`;
+    return `Role '${args.value}' is invalid. Only 'VENDOR' is allowed for this field.`;
   }
 }

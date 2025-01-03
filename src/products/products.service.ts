@@ -19,7 +19,7 @@ export class ProductsService {
       data: {
         ...product,
         user: {
-          connect: { id: userID }, //  link the product to the user(seller or admin)
+          connect: { id: userID }, //  link the product to the user(vendor or admin)
         },
         tags: {
           connect: createdTags.map((tag) => ({ id: tag.id })),

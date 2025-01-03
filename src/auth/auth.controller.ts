@@ -15,7 +15,7 @@ import { SkipAuth } from 'src/decorators/skip-auth';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginDto } from './dto/signIn-user.dto';
 import { User } from '@prisma/client';
-import { CreateSellerDto } from 'src/users/dto/create-seller.dto';
+import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
 
 // Define the type to extract only the `id` and `name`
 type UserData = Pick<User, 'id' | 'name'>;
@@ -25,14 +25,14 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @SkipAuth()
-  @Post('signup/user')
+  @Post('register/user')
   registerUser(@Body() user: CreateUserDto) {
     return this.authService.signUpUser(user);
   }
   @SkipAuth()
-  @Post('signup/seller')
-  registerSeller(@Body() seller: CreateSellerDto) {
-    return this.authService.signUpSeller(seller);
+  @Post('register/vendor')
+  registerVendor(@Body() vendor: CreateVendorDto) {
+    return this.authService.signUpVendor(vendor);
   }
   @SkipAuth()
   @Post('login')

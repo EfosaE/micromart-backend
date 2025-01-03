@@ -10,8 +10,8 @@ import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/signIn-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { Seller, TokenPayload, User } from 'src/interfaces/types';
-import { CreateSellerDto } from 'src/users/dto/create-seller.dto';
+import { TokenPayload, User, Vendor } from 'src/interfaces/types';
+import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
 
 @Injectable()
 export class AuthService {
@@ -38,13 +38,13 @@ export class AuthService {
     return `${newUser.email} created successfully`;
   }
 
-  async signUpSeller(userDetails: CreateSellerDto) {
+  async signUpVendor(userDetails: CreateVendorDto) {
     const hashedPassword = await this.hashService.hashPassword(
       userDetails.password
     );
 
     const updatedUserObject = { ...userDetails, password: hashedPassword };
-    const newUser = await this.user.registerUser(updatedUserObject as Seller);
+    const newUser = await this.user.registerUser(updatedUserObject as Vendor);
 
     this.logger.log(
       `A new user ${newUser.email} of role ${newUser.activeRole} was created`,

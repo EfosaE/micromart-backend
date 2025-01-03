@@ -46,7 +46,7 @@ export class ProductsController {
 
  
   @Post()
-  @Roles(Role.ADMIN, Role.SELLER)
+  @Roles(Role.ADMIN, Role.VENDOR)
   @UseInterceptors(FileInterceptor('image'))
   async createProduct(
     @UploadedFile()
