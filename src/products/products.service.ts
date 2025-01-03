@@ -145,4 +145,12 @@ export class ProductsService {
     }); // Wait for all tag creation promises to resolve
     return await Promise.all(tagPromises);
   }
+
+  async getAllCategories() {
+
+    const categories = await this.db.category.findMany({
+      orderBy: { id: 'asc' }, // Ordering by the 'id' field in ascending order
+    });
+    return categories;
+  }
 }

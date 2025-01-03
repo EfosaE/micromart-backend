@@ -53,7 +53,14 @@ export class UsersService {
     return newUser;
   }
   async createUserWithVendorProfile(user: Vendor) {
-    // Step 1: Create the user with the specified role
+    // Step 1: If the user is a vendor, create vendor details
+    if (!(user.role === 'VENDOR')) {
+      throw new BadRequestException(
+        'Your role must be set to VENDOR to register as a vendor'
+      );
+    }
+
+    // Step 2: Create the user with the specified role
     const newVendor = await this.db.user.create({
       data: {
         name: user.name,
@@ -73,22 +80,6 @@ export class UsersService {
       },
     });
 
-    // Step 2: If the user is a vendor, create vendor details
-    if (!(user.role === 'VENDOR')) {
-      throw new BadRequestException(
-        'Your role must be set to VENDOR to register as a vendor'
-      );
-    }
-
-    // Ensure the category exists
-    const category = await this.db.category.findUnique({
-      where: { name: user.categoryName },
-    });
-
-    if (!category) {
-      throw new Error('Category not found');
-    }
-
     // Create vendor details
     const vendorDetails = await this.db.vendor.create({
       data: {
@@ -96,7 +87,7 @@ export class UsersService {
           connect: { id: newVendor.id },
         }, //  link the vendor to the user
         category: {
-          connect: { id: category.id },
+          connect: { id: user.categoryId },
         }, //  link the vendor to the user
         businessName: user.businessName, // Business name for the vendor
       },

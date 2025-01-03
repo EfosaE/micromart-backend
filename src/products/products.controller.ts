@@ -23,7 +23,6 @@ import { RolesGuard } from 'src/common/role.guard';
 import { validateFile } from 'src/utils/file.util';
 import { SkipAuth } from 'src/decorators/skip-auth';
 
-
 @ApiTags('Products') // Group this controller under "Products" in Swagger
 @UseGuards(RolesGuard) // Apply RolesGuard only where needed
 @Controller('products')
@@ -37,14 +36,19 @@ export class ProductsController {
   @SkipAuth()
   @Get()
   getAllProducts(@Query() query: ProductQueryDto) {
-    const { tags, minPrice, maxPrice } = query 
+    const { tags, minPrice, maxPrice } = query;
     if (tags && !minPrice && !maxPrice) {
-      return this.productsService.getProductsByTags(tags)
+      return this.productsService.getProductsByTags(tags);
     }
     return this.productsService.getFilteredProducts(query);
   }
 
- 
+  @SkipAuth()
+  @Get('categories')
+  getAllCategories() {
+    return this.productsService.getAllCategories();
+  }
+
   @Post()
   @Roles(Role.ADMIN, Role.VENDOR)
   @UseInterceptors(FileInterceptor('image'))

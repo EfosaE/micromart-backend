@@ -36,6 +36,6 @@ export interface Vendor {
   email: string;
   password: string;
   role: 'VENDOR'; // Ensure that the role is explicitly 'VENDOR' for a vendor
-  categoryName: string;
+  categoryId: number;
   businessName?: string;
 }

@@ -20,6 +20,9 @@ type TagType = {
 export class ProductDTO {
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) =>
+    value.replace(/\b\w/g, (char: string) => char.toUpperCase())
+  )
   name: string;
 
   @IsString()

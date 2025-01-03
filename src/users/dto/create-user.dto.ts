@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsString,
@@ -11,9 +12,13 @@ import { Role } from 'src/interfaces/types';
 
 export class CreateUserDto {
   @IsEmail()
+  @Transform(({ value }) => value.toLowerCase()) // Transform email to lowercase
   email: string;
 
   @IsString()
+  @Transform(({ value }) =>
+    value.replace(/\b\w/g, (char: string) => char.toUpperCase())
+  ) 
   name: string;
 
   @IsOptional()
