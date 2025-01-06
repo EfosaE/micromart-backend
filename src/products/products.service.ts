@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductType } from './dto/create-product.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
-import { $Enums } from '@prisma/client';
 import { FilterOptions } from 'src/interfaces/types';
+
 
 @Injectable()
 export class ProductsService {
@@ -12,8 +12,12 @@ export class ProductsService {
     private db: DatabaseService
   ) {}
   async createProduct(product: ProductType, userID: string) {
-    const { tags } = product;
-    const createdTags = await this.createTags(tags);
+    // const { tags } = product;
+    const createdTags = [
+      {
+        id: 1,
+      },
+    ];
 
     const newProduct = await this.db.product.create({
       data: {
@@ -118,36 +122,26 @@ export class ProductsService {
     return { length: products.length, tags, products };
   }
 
-  async createTags(tags: { name: string; tagType: string }[]) {
-    const tagPromises = tags.map(async ({ name, tagType }) => {
-      // Ensure the tagType is valid, or you may need to map it to an enum
-      if (!Object.values($Enums.TagType).includes(tagType as $Enums.TagType)) {
-        throw new BadRequestException(`Invalid tagType: ${tagType}`);
+  // getAllTags = async () => {
+  //   const tags = await this.db.tag.findMany();
+  //   return tags;
+  // };
+  getAllTagsGroupedByTagType = async () => {
+    const tags = await this.db.tag.findMany(); // Fetch all tags
+
+    // Group tags by tagType
+    const groupedTags = tags.reduce((result, tag) => {
+      const { tagType, id, name } = tag;
+      if (!result[tagType]) {
+        result[tagType] = [];
       }
-
-      // Create or ensure the tag exists
-      const tag = await this.db.tag.upsert({
-        where: {
-          name_tagType: {
-            name,
-            tagType: tagType as $Enums.TagType,
-          },
-        },
-
-        update: {}, // No need to update anything, just check for existence
-        create: {
-          name,
-          tagType: tagType as $Enums.TagType, // Ensure tagType is valid
-        },
-      });
-
-      return tag;
-    }); // Wait for all tag creation promises to resolve
-    return await Promise.all(tagPromises);
-  }
+      result[tagType].push({ id, name });
+      return result;
+    }, {});
+    return groupedTags
+  };
 
   async getAllCategories() {
-
     const categories = await this.db.category.findMany({
       orderBy: { id: 'asc' }, // Ordering by the 'id' field in ascending order
     });

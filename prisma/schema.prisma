@@ -49,7 +49,7 @@ model Product {
   quantity    Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  tags        Tag[]
+  tags        Tag[] //implicit relation handled by prisma MANY-MANY
   vendorId    String
   cartItems   CartItem[]
   orderItems  OrderItem[]
@@ -63,7 +63,7 @@ model Tag {
   name    String
   tagType TagType
 
-  Product Product[]
+  Product Product[] //implicit relation handled by prisma MANY-MANY
 
   @@unique([name, tagType])
 }
@@ -147,5 +147,7 @@ enum TagType {
   UsageBasedTags
   DemographicTags
   MaterialQualityTags
+  AdminTags
+  FunctionalTags
   Others
 }

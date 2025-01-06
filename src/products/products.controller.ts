@@ -9,7 +9,9 @@ import {
   UploadedFile,
   BadRequestException,
   UseGuards,
+
 } from '@nestjs/common';
+
 import { ProductDTO } from './dto/create-product.dto';
 import { ProductsService } from './products.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -47,6 +49,12 @@ export class ProductsController {
   @Get('categories')
   getAllCategories() {
     return this.productsService.getAllCategories();
+  }
+
+  @SkipAuth()
+  @Get('tags')
+  getAllTags() {
+    return this.productsService.getAllTagsGroupedByTagType();
   }
 
   @Post()
