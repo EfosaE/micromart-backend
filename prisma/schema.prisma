@@ -21,6 +21,7 @@ model User {
   orders     Order[]
   products   Product[]
   vendor     Vendor? // A user can have a vendor profile, but it is optional
+  Review     Review[] // implicit relationship managed by prisma
 }
 
 model Vendor {
@@ -54,6 +55,7 @@ model Product {
   cartItems   CartItem[]
   orderItems  OrderItem[]
   user        User        @relation(fields: [vendorId], references: [id])
+  Review      Review[]
 
   @@unique([name, vendorId])
 }
@@ -61,11 +63,22 @@ model Product {
 model Tag {
   id      Int     @id @default(autoincrement())
   name    String
-  tagType TagType
+  tagType TagType 
 
   Product Product[] //implicit relation handled by prisma MANY-MANY
 
   @@unique([name, tagType])
+}
+
+model Review {
+  id        String  @id @default(cuid())
+  content   String
+  rating    Int
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
 }
 
 model Order {

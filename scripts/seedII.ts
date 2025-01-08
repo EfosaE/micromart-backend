@@ -113,7 +113,9 @@ const productTags = {
   ],
   Others: [],
 };
-
+// const newTag = {
+//   CategoryBasedTags: ['Computers & Accessories'],
+// };
 async function main() {
   for (const [tagType, tags] of Object.entries(productTags)) {
     for (const tag of tags) {

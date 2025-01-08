@@ -12,13 +12,6 @@ export class ProductsService {
     private db: DatabaseService
   ) {}
   async createProduct(product: ProductType, userID: string) {
-    // const { tags } = product;
-    const createdTags = [
-      {
-        id: 1,
-      },
-    ];
-
     const newProduct = await this.db.product.create({
       data: {
         ...product,
@@ -26,7 +19,7 @@ export class ProductsService {
           connect: { id: userID }, //  link the product to the user(vendor or admin)
         },
         tags: {
-          connect: createdTags.map((tag) => ({ id: tag.id })),
+          connect: product.tags.map((tagId) => ({ id: tagId})),
         },
       },
       select: {
