@@ -4,7 +4,6 @@ import { ProductType } from './dto/create-product.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
 import { FilterOptions } from 'src/interfaces/types';
 
-
 @Injectable()
 export class ProductsService {
   constructor(
@@ -19,7 +18,7 @@ export class ProductsService {
           connect: { id: userID }, //  link the product to the user(vendor or admin)
         },
         tags: {
-          connect: product.tags.map((tagId) => ({ id: tagId})),
+          connect: product.tags.map((tagId) => ({ id: tagId })),
         },
       },
       select: {
@@ -47,7 +46,7 @@ export class ProductsService {
     return product;
   }
 
-  async getFilteredProducts(filterOptions: FilterOptions) {
+  async getFilteredProducts(filterOptions: FilterOptions, limit:number) {
     const { tags, minPrice, maxPrice } = filterOptions;
     console.log(filterOptions);
     const products = await this.db.product.findMany({
@@ -86,19 +85,22 @@ export class ProductsService {
         imgUrl: true,
         price: true,
         quantity: true,
+        tags: true,
       },
+      take: limit,
     });
 
     return { length: products.length, products };
   }
 
-  async getProductsByTags(tags: string[]) {
+  async getProductsByTags(tags: string[], limit: number) {
     const products = await this.db.product.findMany({
       where: {
         tags: {
           some: {
             name: {
               in: tags,
+              mode: 'insensitive',
             },
           },
         },
@@ -110,6 +112,7 @@ export class ProductsService {
         price: true,
         quantity: true,
       },
+      take: limit, // Limit the number of products to 4
     });
 
     return { length: products.length, tags, products };
@@ -131,7 +134,7 @@ export class ProductsService {
       result[tagType].push({ id, name });
       return result;
     }, {});
-    return groupedTags
+    return groupedTags;
   };
 
   async getAllCategories() {

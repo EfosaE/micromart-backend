@@ -33,4 +33,13 @@ export class ProductQueryDto {
   @IsNumber()
   @Transform(({ value }) => parseFloat(value)) // Transform to a number
   maxPrice?: number;
+
+  @ApiPropertyOptional({
+    description: 'limit for filtering',
+    type: Number,
+    example: 4,
+  })
+  @IsNumber()
+  @Transform(({ value }) => parseInt(value, 10)) 
+  limit: number;
 }

@@ -91,12 +91,12 @@ export class AuthService {
     };
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: '15m',
+      expiresIn: '1d',
     });
     return token;
   }
 
-  // Create refresh token
+  // Create refresh token... deprecated tho I dont use refreshTokens anymore (remix sessions)
   async createRefreshToken(user: TokenPayload) {
     const payload = {
       sub: user.id,

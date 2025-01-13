@@ -38,11 +38,12 @@ export class ProductsController {
   @SkipAuth()
   @Get()
   getAllProducts(@Query() query: ProductQueryDto) {
-    const { tags, minPrice, maxPrice } = query;
+    const { tags, minPrice, maxPrice, limit } = query;
+    console.log(tags)
     if (tags && !minPrice && !maxPrice) {
-      return this.productsService.getProductsByTags(tags);
+      return this.productsService.getProductsByTags(tags, limit);
     }
-    return this.productsService.getFilteredProducts(query);
+    return this.productsService.getFilteredProducts(query, limit);
   }
 
   @SkipAuth()

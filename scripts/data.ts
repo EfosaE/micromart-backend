@@ -132,9 +132,6 @@ export const fashionData = [
   },
 ];
 
-
-
-
 export const computerData = [
   {
     name: 'Wireless Ergonomic Mouse',
@@ -146,7 +143,7 @@ export const computerData = [
     price: 17500,
     quantity: 50,
     userId: '33c90666-adc7-466d-b016-7cedaf752f15',
-    tagIds: [1, 30, 92],
+    tagIds: [1, 30, 95],
   },
   {
     name: 'RGB Gaming Keyboard',
@@ -158,7 +155,7 @@ export const computerData = [
     price: 45000,
     quantity: 15,
     userId: '33c90666-adc7-466d-b016-7cedaf752f15',
-    tagIds: [1, 30, 92],
+    tagIds: [1, 30, 95],
   },
   {
     name: '17-inch Gaming Laptop',
@@ -194,7 +191,7 @@ export const computerData = [
     price: 10000,
     quantity: 40,
     userId: '33c90666-adc7-466d-b016-7cedaf752f15',
-    tagIds: [1, 30, 92, 86, 87],
+    tagIds: [1, 30, 95, 86, 87],
   },
   {
     name: 'External Hard Drive (1TB)',
@@ -206,7 +203,7 @@ export const computerData = [
     price: 105000,
     quantity: 35,
     userId: '33c90666-adc7-466d-b016-7cedaf752f15',
-    tagIds: [1, 30, 92],
+    tagIds: [1, 30, 95],
   },
   {
     name: '256GB USB Flash Drive',
@@ -218,7 +215,7 @@ export const computerData = [
     price: 35000,
     quantity: 100,
     userId: '33c90666-adc7-466d-b016-7cedaf752f15',
-    tagIds: [1, 30, 92],
+    tagIds: [1, 30, 95],
   },
   {
     name: 'Surround Sound PC Speakers',
@@ -230,7 +227,7 @@ export const computerData = [
     price: 20000,
     quantity: 15,
     userId: '33c90666-adc7-466d-b016-7cedaf752f15',
-    tagIds: [1, 30, 92],
+    tagIds: [1, 30, 95],
   },
   {
     name: 'Ultra HD 4K Monitor',
@@ -269,7 +266,6 @@ export const computerData = [
     tagIds: [1, 30, 92, 47],
   },
 ];
-
 
 export const phones = [
   {
@@ -316,7 +312,7 @@ export const phones = [
     price: 400000,
     quantity: 15,
     userId: '11948f00-cd31-4895-b971-ac5631fd3bb7',
-    tagIds: [23, 58, 91],
+    tagIds: [23, 58, 91, 93],
   },
   {
     name: 'Xiaomi Mi 13 Pro',
@@ -328,7 +324,7 @@ export const phones = [
     price: 350000,
     quantity: 20,
     userId: '11948f00-cd31-4895-b971-ac5631fd3bb7',
-    tagIds: [24, 59, 92],
+    tagIds: [24, 59, 93],
   },
   {
     name: 'Huawei P60 Pro',
@@ -388,5 +384,269 @@ export const phones = [
     quantity: 35,
     userId: '11948f00-cd31-4895-b971-ac5631fd3bb7',
     tagIds: [1, 93, 47],
+  },
+];
+
+export const appliances = [
+  {
+    name: 'Philips Steam Iron',
+    description:
+      '1800W steam iron with non-stick soleplate and vertical steam feature.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1162552603/photo/iron-for-ironing-on-a-wooden-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=sIFZUKdvy-tbRYh-39DM6XD3bxUeapqOa-5XyYwvCjw=',
+    price: 75000,
+    quantity: 20,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 2, 42, 47, 78],
+  },
+  {
+    name: 'Standing Fan',
+    description:
+      '5-speed standing fan with remote control and energy-saving design.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1011385390/photo/ventilator-appliances-pedestal-fan-to-cool-the-environment-at-home-or-office.jpg?s=612x612&w=0&k=20&c=BDdoPBnghrpogdWbhfAsJpHXNHLG_BwHMtu2t_WFjfw=',
+    price: 66000,
+    quantity: 10,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 42, 47, 78],
+  },
+  {
+    name: 'Binatone Electric Kettle',
+    description:
+      '1.7L cordless kettle with auto shut-off and stainless steel design.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1300879783/photo/electric-kettle.jpg?s=612x612&w=0&k=20&c=ijmjHvLdSoWk-yshHJHhQ16UIt6vWJ96o-SYGB4jNj4=',
+    price: 45000,
+    quantity: 10,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 2, 42, 47, 78],
+  },
+  {
+    name: 'Midea Chest Freezer',
+    description:
+      '200L chest freezer with fast freezing and low noise operation.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1250000677/photo/open-freezer-on-a-white-background.jpg?s=612x612&w=0&k=20&c=CmbYIGsysXx5OkIbzqoWtMygOAfZkUdQvbHDDzBOrJU=',
+    price: 380000,
+    quantity: 10,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 2, 42, 47, 78],
+  },
+  {
+    name: 'Scanfrost Gas Cooker',
+    description: '4-burner gas cooker with oven and tempered glass top.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/538161084/photo/close-up-stainless-steel-stove-with-oven.jpg?s=612x612&w=0&k=20&c=5S1ntbTlFRQnJHKEMybLBE4WXwuP_GT84Rl7i8xMrkc=',
+    price: 275000,
+    quantity: 12,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [25, 67],
+  },
+  {
+    name: 'Samsung QLED Smart TV',
+    description:
+      '75-inch 4K UHD Smart TV with Quantum Dot Technology for vibrant colors.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/467946398/photo/contemporary-curved-led-smart-tv-design.jpg?s=612x612&w=0&k=20&c=s-eIL1kSR1YalWVGFk9sIvt0XbJMQGIlLlzUUbw6jLA=',
+    price: 850000,
+    quantity: 15,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 2, 30, 47, 78],
+  },
+  {
+    name: 'LG Refrigerator',
+    description:
+      'Smart inverter 260L double-door refrigerator with frost-free technology.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1954318832/photo/refrigiraters-isolated.jpg?s=612x612&w=0&k=20&c=PDSC6q83X5o-sdYiV3ixMp1VDeVH0vECDea9r1xU6k8=',
+    price: 680000,
+    quantity: 12,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [2, 42, 47, 78],
+  },
+  {
+    name: 'KitchenAid Stand Mixer',
+    description:
+      '5-quart Artisan mixer with multiple attachments for versatile use.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/467048753/photo/stand-mixer-isolated-on-a-white-background-appliance.jpg?s=612x612&w=0&k=20&c=PIAPXwo0E9v3OtRZlIel6SlhQt975fiapTULu4rQjfQ=',
+    price: 150000,
+    quantity: 8,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 2, 42, 47, 78],
+  },
+  {
+    name: 'Bosch Dishwasher',
+    description: 'Fully integrated 14-place setting dishwasher with eco-mode.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1403871214/photo/open-door-of-built-in-dishwasher-kitchen-with-integrated-appliances-plates-and-dishes-in-the.jpg?s=612x612&w=0&k=20&c=t8uk6TNXj6yfvLJD_F4t0c40CW98f1oDyj-uZCiqO4Y=',
+    price: 250000,
+    quantity: 7,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [2, 42, 47, 78],
+  },
+  {
+    name: 'Philips Air Fryer',
+    description: 'Rapid air technology for healthy and crispy frying.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1465450529/photo/air-fryer-machine-cooking-potato-fried-in-kitchen-lifestyle-of-new-normal-cooking.jpg?s=612x612&w=0&k=20&c=rHUNqkQRQ5A52cGa4mnNCqzzS7sBwC00vPFKqyPiEm8=',
+    price: 45000,
+    quantity: 12,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 2, 30, 42, 47, 78],
+  },
+  {
+    name: 'Samsung Washing Machine',
+    description:
+      '6kg fully automatic front-load washing machine with inverter motor.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1463361334/photo/washing-machine.jpg?s=612x612&w=0&k=20&c=XZbX6NeoxSvLldqyOFAm5yh0N-b5933E5wzfGRQtq_U=',
+    price: 160000,
+    quantity: 10,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 30, 42, 47, 78],
+  },
+  {
+    name: 'Apple MacBook Air M2',
+    description: '13-inch lightweight laptop with M2 chip and 512GB SSD.',
+    imgType: 'URL',
+    imgUrl:
+      'https://images.unsplash.com/photo-1717865499857-ec35ce6e65fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8QXBwbGUlMjBNYWNCb29rJTIwQWlyJTIwTTJ8ZW58MHx8MHx8fDA%3D',
+    price: 1200000,
+    quantity: 5,
+    userId: '33c90666-adc7-466d-b016-7cedaf752f15',
+    tagIds: [1, 30, 92, 47],
+  },
+  {
+    name: 'Panasonic Microwave Oven',
+    description: '25L countertop microwave with inverter technology.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1351458571/photo/microwave-oven.jpg?s=612x612&w=0&k=20&c=Uozg-oq34rYwihyQC7VHvfZZ4iwnCOvKKC13u12dn7c=',
+    price: 55000,
+    quantity: 14,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 30, 42, 47, 78],
+  },
+  {
+    name: 'Logitech Wireless Keyboard',
+    description: 'Compact wireless keyboard with Bluetooth connectivity.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/2075627975/photo/computer-keyboard.jpg?s=612x612&w=0&k=20&c=P_D5-lUBcVoWOwANP--1GYbp5LYJwD5JhaMJP82hAaM=',
+    price: 27000,
+    quantity: 30,
+    userId: '33c90666-adc7-466d-b016-7cedaf752f15',
+    tagIds: [1, 30, 95],
+  },
+  {
+    name: 'Logitech Wireless Mouse',
+    description: 'Modern wireless keyboard with Bluetooth connectivity.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/97747867/photo/wireless-mouse.jpg?s=612x612&w=0&k=20&c=TGTH2-NOL2nhgbbFxp4e_j4vNx_Um4qhkhSez7OyfBE=',
+    price: 25000,
+    quantity: 6,
+    userId: '33c90666-adc7-466d-b016-7cedaf752f15',
+    tagIds: [1, 30, 95],
+  },
+  {
+    name: 'Canon DSLR Camera',
+    description:
+      'EOS Rebel T7 DSLR with 18-55mm lens for photography enthusiasts.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1713151852/photo/modern-black-digital-slr-camera-set-on-white-background.jpg?s=612x612&w=0&k=20&c=wcdJD81vIkImfWi3c-RhBeI2_NtDKCqc5KiJDvUH3vo=',
+    price: 500000,
+    quantity: 5,
+    userId: '11948f00-cd31-4895-b971-ac5631fd3bb7',
+    tagIds: [1, 30, 47, 81, 86],
+  },
+  {
+    name: 'Fitbit Versa 4',
+    description: 'Health and fitness smartwatch with 6+ days of battery life.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1461271207/photo/black-smart-watch-and-wireless-headphones-on-a-white-background-incoming-call-on-a-modern.jpg?s=612x612&w=0&k=20&c=Xmpjl82xBMOj67mrQylBmIEHewzmOCIjIFuYzF2Jrgs=',
+    price: 90000,
+    quantity: 20,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 30, 47, 81, 86],
+  },
+  {
+    name: 'Nespresso Coffee Maker',
+    description: 'Coffee and espresso machine with one-touch brewing system.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1127391694/photo/best-thing-in-the-morning.jpg?s=612x612&w=0&k=20&c=vgsEAtoXEX9wQIwl9jqDlr_q6S-eHyVFy0ywTlrhNiA=',
+    price: 65000,
+    quantity: 15,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 2, 30, 42, 47, 78],
+  },
+  {
+    name: 'Anker Power Bank',
+    description: 'Portable charger with 20,000mAh capacity and fast charging.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1126642401/photo/power-bank-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=FMMhXxZql2guHigJvPDsi6S5Bp_QT6OsfZnD6kqcc3U=',
+    price: 40000,
+    quantity: 50,
+    userId: '11948f00-cd31-4895-b971-ac5631fd3bb7',
+    tagIds: [1, 30, 47, 94],
+  },
+  {
+    name: 'Power Generator',
+    description: '1.5-ton generator with inverter technology.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1545002202/photo/portable-diesel-generator-ac-at-the-showroom-of-a-large-store.jpg?s=612x612&w=0&k=20&c=6Ja5eEbIBKfYChKN5-rcDrzQSJNcMpE3vztYHudbyl0=',
+    price: 470000,
+    quantity: 12,
+    userId: '465c7f3e-26f9-40b7-aae3-08458e970901',
+    tagIds: [1, 42, 47, 78],
+  },
+  {
+    name: 'JBL Bluetooth Speaker',
+    description: 'Premium portable speaker with high-fidelity sound.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1059154330/photo/boombox.jpg?s=612x612&w=0&k=20&c=AYwVrPpREeFXXP0j8rC8R3eF_9WUVghBXPndGqZYSJw=',
+    price: 90000,
+    quantity: 15,
+    userId: '11948f00-cd31-4895-b971-ac5631fd3bb7',
+    tagIds: [37, 94, 86, 88, 63],
+  },
+  {
+    name: 'Beats Wireless Earbuds',
+    description: 'High-performance earbuds with active noise cancellation.',
+    imgType: 'URL',
+    imgUrl:
+      'https://media.istockphoto.com/id/1830748183/photo/bluetooth-earbuds-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=0M5YW0pMMBjxYmLkX7rEw-5obzBYLfL0vWT_I29bOHA=',
+    price: 75000,
+    quantity: 18,
+    userId: '11948f00-cd31-4895-b971-ac5631fd3bb7',
+    tagIds: [1, 37, 94, 86, 88, 63],
+  },
+  {
+    name: 'Asus ROG Gaming Laptop',
+    description: 'Powerful gaming laptop with Intel i7 processor and RTX 3070.',
+    imgType: 'URL',
+    imgUrl: 'https://dlcdnwebimgs.asus.com/gain/0075CD12-E145-49F5-916C-EF86E8691207/w750/h470',
+    price: 1900000,
+    quantity: 3,
+    userId: '33c90666-adc7-466d-b016-7cedaf752f15',
+    tagIds: [1, 30, 92, 47],
   },
 ];

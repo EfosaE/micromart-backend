@@ -1,6 +1,6 @@
 import { $Enums, PrismaClient } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
-import { computerData, phones } from './data';
+import { appliances, computerData, fashionData, phones} from './data';
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 10);
 const prisma = new PrismaClient().$extends({
@@ -22,7 +22,25 @@ const prisma = new PrismaClient().$extends({
 });
 
 async function main() {
-  for (const productData of computerData) {
+  for (const productData of fashionData) {
+    await prisma.product.create({
+      data: {
+        name: productData.name,
+        description: productData.description,
+        imgType: productData.imgType as $Enums.ImgType,
+        imgUrl: productData.imgUrl,
+        price: productData.price,
+        quantity: productData.quantity,
+        user: {
+          connect: { id: productData.userId }, // Connect the vendor
+        },
+        tags: {
+          connect: productData.tagIds.map((id) => ({ id })), // Connect the tag
+        },
+      },
+    });
+  }
+  for (const productData of appliances) {
     await prisma.product.create({
       data: {
         name: productData.name,
@@ -41,6 +59,25 @@ async function main() {
     });
   }
 
+    for (const productData of computerData) {
+      await prisma.product.create({
+        data: {
+          name: productData.name,
+          description: productData.description,
+          imgType: productData.imgType as $Enums.ImgType,
+          imgUrl: productData.imgUrl,
+          price: productData.price,
+          quantity: productData.quantity,
+          user: {
+            connect: { id: productData.userId }, // Connect the vendor
+          },
+          tags: {
+            connect: productData.tagIds.map((id) => ({ id })), // Connect the tag
+          },
+        },
+      });
+    }
+  
     for (const productData of phones) {
       await prisma.product.create({
         data: {
@@ -59,8 +96,7 @@ async function main() {
         },
       });
     }
-
-  console.log('Seeding completed!');
+  console.log(`Seeding completed: ${fashionData.length + computerData.length + appliances.length + phones.length} items`);
 }
 
 main()
