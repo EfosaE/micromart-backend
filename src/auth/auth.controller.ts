@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  InternalServerErrorException,
   Post,
+  Query,
+  Redirect,
   Req,
   Res,
   UnauthorizedException,
@@ -18,10 +21,10 @@ import { LoginDto } from './dto/signIn-user.dto';
 import { User } from '@prisma/client';
 import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GoogleAuthGuard } from './google.guard';
 
 // Define the type to extract only the `id` and `name`
 type UserData = Pick<User, 'id' | 'name'>;
-
 
 @SkipAuth()
 @Controller('auth')
@@ -52,8 +55,6 @@ export class AuthController {
     return this.authService.login(loginUserDto, res);
   }
 
-  
-
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth() {
@@ -61,19 +62,52 @@ export class AuthController {
   }
 
   @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  async googleAuthCallback(@Req() req, @Res() res: Response) {
-    console.log('user from google', req.user);
-    // const token = await this.authService.signIn(req.user);
+  @Redirect()
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthCallback(
+    @Req() req: Request,
+    @Query() query: { error?: string }
+  ) {
+    console.log('Query:', query);
 
-    // res.cookie('access_token', token, {
-    //   maxAge: 2592000000,
-    //   sameSite: true,
-    //   secure: false,
-    // });
+    if (query.error) {
+      // Handle the error, e.g., "access_denied"
+      return {
+        url: `http://localhost:3000/login?error=${query.error}`,
+      };
+    }
 
-    // Send user info as JSON
-    return res.status(200).json({ user: req.user });
+    if (!req.user) {
+      throw new UnauthorizedException(
+        'Authentication failed or user data is missing.'
+      );
+    }
+
+    const user = req.user as User;
+    if (!user?.id || !user?.name || !user?.activeRole) {
+      throw new UnauthorizedException('Invalid user data.');
+    }
+
+    let token: string;
+    try {
+      token = await this.authService.createAccessToken({
+        id: user.id,
+        name: user.name,
+        activeRole: user.activeRole,
+      });
+    } catch (err) {
+      console.error('Error generating access token:', err);
+      throw new InternalServerErrorException(
+        'Failed to generate access token.'
+      );
+    }
+
+    console.log('Access token generated successfully.', token);
+
+    // Handle successful login
+    return {
+      url: `http://localhost:3000/callback?token=${encodeURIComponent(token)}`,
+    };
   }
 
   // refresh token endpoint
