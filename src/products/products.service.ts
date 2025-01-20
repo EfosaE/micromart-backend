@@ -32,6 +32,7 @@ export class ProductsService {
     );
     return newProduct;
   }
+  
   async getProductByID(productId: string) {
     const product = await this.db.product.findUnique({
       where: {

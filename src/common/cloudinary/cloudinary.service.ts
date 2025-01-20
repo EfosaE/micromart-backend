@@ -6,15 +6,15 @@ import {
 } from 'cloudinary';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import toStream = require('buffer-to-stream');
-
+import { ENV } from 'src/constants';
 
 @Injectable()
 export class CloudinaryService {
   constructor() {
     cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
+      cloud_name: ENV.CLOUDINARY_CLOUD_NAME,
+      api_key: ENV.CLOUDINARY_API_KEY,
+      api_secret: ENV.CLOUDINARY_API_SECRET,
     });
   }
 
@@ -22,7 +22,7 @@ export class CloudinaryService {
     file: Express.Multer.File,
     folder: string
   ): Promise<UploadApiResponse> {
-      console.log(file, folder)
+    console.log(file, folder);
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {

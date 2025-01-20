@@ -12,6 +12,7 @@ import {
 } from '@prisma/client/runtime/library';
 import { MyLoggerService } from './logger/logger.service';
 import { handlePrismaError } from './utils/prisma.util';
+import { ENV } from './constants';
 
 type MyResponseObj = {
   statusCode: number;
@@ -29,7 +30,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const environment = process.env.NODE_ENV;
+    const environment = ENV.NODE_ENV;
 
     const myResponseObj: MyResponseObj = {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -70,11 +71,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       myResponseObj.response = {
         message: exception.message, // Validation error message
       };
-    } else if (exception instanceof Error ) {
+    } else if (exception instanceof Error) {
       myResponseObj.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       myResponseObj.response = {
         message: exception.message,
-        stack: process.env.NODE_ENV === 'development' ? exception.stack : undefined, // Optional stack trace
+        stack: ENV.NODE_ENV === 'development' ? exception.stack : undefined, // Optional stack trace
       };
     } else {
       // Catch all other unexpected errors

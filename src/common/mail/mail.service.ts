@@ -6,6 +6,7 @@ import * as path from 'path';
 import { OnEvent } from '@nestjs/event-emitter';
 import { UserCreatedEvent } from 'src/users/events/user-created.event';
 import { WelcomeEmailContext } from 'src/interfaces/types';
+import { ENV } from 'src/constants';
 
 @Injectable()
 export class MailService {
@@ -16,8 +17,8 @@ export class MailService {
       host: 'sandbox.smtp.mailtrap.io',
       port: 2525,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: ENV.EMAIL_USER,
+        pass: ENV.EMAIL_PASS,
       },
       // logger: true, // Enable logging
       // debug: true, // Enable debugging
@@ -43,7 +44,7 @@ export class MailService {
 
     const html = this.compileTemplate(templateName, context);
     const mailOptions: nodemailer.SendMailOptions = {
-      from: process.env.EMAIL_FROM,
+      from: ENV.EMAIL_FROM,
       to,
       subject,
       html,
@@ -62,6 +63,6 @@ export class MailService {
       { name: user.name, dashboardLink: 'https://geosmart-app.netlify.app/' }
     ); // Access the payload here
 
-    console.log("Email sent successfully")
+    console.log('Email sent successfully');
   }
 }

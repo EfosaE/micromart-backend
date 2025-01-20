@@ -10,11 +10,11 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
-import { GoogleOAuthModule } from './googleoauth/googleoauth.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MailModule } from './common/mail/mail.module';
 import { CloudinaryModule } from './common/cloudinary/cloudinary.module';
 import { AuthGuard } from './auth/auth.guard';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -26,11 +26,10 @@ import { AuthGuard } from './auth/auth.guard';
     AuthModule,
     ProductsModule,
     OrdersModule,
-    GoogleOAuthModule,
     MailModule,
     CloudinaryModule,
     ConfigModule.forRoot({
-      isGlobal: true, // Makes the ConfigModule available globally but I didnt use the config service tho. process.env >>>>
+      isGlobal: true, // Makes the ConfigModule available globally but I didnt use the config service tho. ENV >>>>
     }),
     ThrottlerModule.forRoot([
       {
@@ -49,6 +48,7 @@ import { AuthGuard } from './auth/auth.guard';
         limit: 100,
       },
     ]),
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [

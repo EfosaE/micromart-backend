@@ -31,6 +31,8 @@ export interface User {
   role?: 'USER';
 }
 
+
+
 export interface Vendor {
   name: string;
   email: string;
@@ -38,4 +40,10 @@ export interface Vendor {
   role: 'VENDOR'; // Ensure that the role is explicitly 'VENDOR' for a vendor
   categoryId: number;
   businessName?: string;
+}
+export type PayStackResponse = {
+  status: boolean,
+  message: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any,
 }

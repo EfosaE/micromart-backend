@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MyLoggerService } from 'src/logger/logger.service';
-import { LoginDto } from 'src/auth/dto/signIn-user.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserCreatedEvent } from './events/user-created.event';
 
@@ -41,8 +40,6 @@ export class UsersService {
         email: true,
         roles: true,
         activeRole: true,
-        createdAt: true,
-        updatedAt: true,
       },
     });
 
@@ -103,10 +100,8 @@ export class UsersService {
     return { length: users.length, users };
   }
 
-  async findOne(credentials: LoginDto) {
-    const { email } = credentials;
-
-    const user = await this.db.user.findUnique({
+  async findOne(email: string) {
+      const user = await this.db.user.findUnique({
       where: { email },
       select: {
         id: true,

@@ -10,14 +10,15 @@ import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/signIn-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { TokenPayload, User, Vendor } from 'src/interfaces/types';
+import {  TokenPayload, User, Vendor } from 'src/interfaces/types';
 import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
+import { ENV } from 'src/constants';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly hashService: HashService,
-    private user: UsersService,
+    private userService: UsersService,
     private readonly logger: MyLoggerService,
     private jwtService: JwtService
   ) {}
@@ -28,7 +29,9 @@ export class AuthService {
     );
 
     const updatedUserObject = { ...userDetails, password: hashedPassword };
-    const newUser = await this.user.registerUser(updatedUserObject as User);
+    const newUser = await this.userService.registerUser(
+      updatedUserObject as User
+    );
 
     this.logger.log(
       `A new user ${newUser.email} of role ${newUser.activeRole} was created`,
@@ -44,7 +47,9 @@ export class AuthService {
     );
 
     const updatedUserObject = { ...userDetails, password: hashedPassword };
-    const newUser = await this.user.registerUser(updatedUserObject as Vendor);
+    const newUser = await this.userService.registerUser(
+      updatedUserObject as Vendor
+    );
 
     this.logger.log(
       `A new user ${newUser.email} of role ${newUser.activeRole} was created`,
@@ -53,9 +58,10 @@ export class AuthService {
 
     return `${newUser.email} created successfully`;
   }
+
   async login(userCredentials: LoginDto, res: Response) {
     const { password } = userCredentials;
-    const user = await this.user.findOne(userCredentials);
+    const user = await this.userService.findOne(userCredentials.email);
 
     // If no user is found, throw an UnauthorizedException
     if (!user) {
@@ -82,6 +88,12 @@ export class AuthService {
     return res.status(200).json({ accessToken, user: requiredUserPayload });
   }
 
+  async validateGoogleUser(userData: User) {
+    const user = await this.userService.findOne(userData.email);
+    if (user) return user;
+    return await this.userService.registerUser(userData);
+  }
+
   // Create access token
   async createAccessToken(user: TokenPayload): Promise<string> {
     const payload = {
@@ -90,7 +102,7 @@ export class AuthService {
       role: user.activeRole,
     };
     const token = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET,
+      secret: ENV.JWT_SECRET,
       expiresIn: '1d',
     });
     return token;
@@ -104,7 +116,7 @@ export class AuthService {
       role: user.activeRole,
     };
     return this.jwtService.sign(payload, {
-      secret: process.env.REFRESH_TOKEN,
+      secret: ENV.REFRESH_TOKEN,
       expiresIn: '2d',
     });
   }
@@ -114,7 +126,7 @@ export class AuthService {
     // Set the refresh token in an HTTP-only cookie
     res.cookie('refresh_token', token, {
       httpOnly: true, // Makes the cookie inaccessible to JavaScript
-      secure: process.env.NODE_ENV !== 'development',
+      secure: ENV.NODE_ENV !== 'development',
       sameSite: 'none', // allow for CORS
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     });
@@ -124,7 +136,7 @@ export class AuthService {
     try {
       // Decode and verify the refresh token
       const payload = this.jwtService.verify(token, {
-        secret: process.env.REFRESH_TOKEN,
+        secret: ENV.REFRESH_TOKEN,
       });
       return payload;
     } catch {

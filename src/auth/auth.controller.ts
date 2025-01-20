@@ -6,6 +6,7 @@ import {
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -16,25 +17,27 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginDto } from './dto/signIn-user.dto';
 import { User } from '@prisma/client';
 import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 // Define the type to extract only the `id` and `name`
 type UserData = Pick<User, 'id' | 'name'>;
 
+
+@SkipAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @SkipAuth()
   @Post('register/user')
   registerUser(@Body() user: CreateUserDto) {
     return this.authService.signUpUser(user);
   }
-  @SkipAuth()
+
   @Post('register/vendor')
   registerVendor(@Body() vendor: CreateVendorDto) {
     return this.authService.signUpVendor(vendor);
   }
-  @SkipAuth()
+
   @Post('login')
   @ApiOperation({
     summary: 'Logs the user in and set the tokens in an http-only cookie ',
@@ -49,17 +52,32 @@ export class AuthController {
     return this.authService.login(loginUserDto, res);
   }
 
-  // @UseGuards(AuthGuard) no longer necessary as AuthGuard is already global
-  @Get('profile')
-  getProfile(@Req() req: Request) {
-    // Access the user data that was attached in middleware
-    const user = req['user'];
-    console.log('BE called !!', user);
-    return user;
+  
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    // Redirect to Google for authentication
   }
 
-  // refresh token endpoint Test
-  @SkipAuth()
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req, @Res() res: Response) {
+    console.log('user from google', req.user);
+    // const token = await this.authService.signIn(req.user);
+
+    // res.cookie('access_token', token, {
+    //   maxAge: 2592000000,
+    //   sameSite: true,
+    //   secure: false,
+    // });
+
+    // Send user info as JSON
+    return res.status(200).json({ user: req.user });
+  }
+
+  // refresh token endpoint
+
   @Get('refresh')
   async refreshEndpoint(
     @Req() req: Request
