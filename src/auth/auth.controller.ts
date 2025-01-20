@@ -22,6 +22,7 @@ import { User } from '@prisma/client';
 import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleAuthGuard } from './google.guard';
+import { ENV } from 'src/constants';
 
 // Define the type to extract only the `id` and `name`
 type UserData = Pick<User, 'id' | 'name'>;
@@ -68,12 +69,11 @@ export class AuthController {
     @Req() req: Request,
     @Query() query: { error?: string }
   ) {
-    console.log('Query:', query);
 
     if (query.error) {
       // Handle the error, e.g., "access_denied"
       return {
-        url: `http://localhost:3000/login?error=${query.error}`,
+        url: `${ENV.REMIX_APP_URL}/login?error=${query.error}`,
       };
     }
 
@@ -102,11 +102,9 @@ export class AuthController {
       );
     }
 
-    console.log('Access token generated successfully.', token);
-
     // Handle successful login
     return {
-      url: `http://localhost:3000/callback?token=${encodeURIComponent(token)}`,
+      url: `${ENV.REMIX_APP_URL}/callback?token=${encodeURIComponent(token)}`,
     };
   }
 

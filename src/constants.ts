@@ -24,6 +24,9 @@ assert(process.env.OPTIMIZE_API_KEY, 'OPTIMIZE_API_KEY is not defined');
 assert(process.env.NODE_ENV, 'NODE_ENV is not defined');
 assert(process.env.TEST_SECRET_KEY, 'TEST_SECRET_KEY is not defined');
 assert(process.env.PAYSTACK_BASE_URL, 'PAYSTACK_BASE_URL is not defined');
+assert(process.env.REMIX_APP_URL, 'REMIX_APP_URL is not defined');
+assert(process.env.NEST_API_URL, 'NEST_API_URL is not defined');
+
 
 // Export all environment variables in a centralized object
 export const ENV = {
@@ -43,4 +46,6 @@ export const ENV = {
   NODE_ENV: process.env.NODE_ENV,
   TEST_SECRET_KEY: process.env.TEST_SECRET_KEY,
   PAYSTACK_BASE_URL: process.env.PAYSTACK_BASE_URL,
+  REMIX_APP_URL: process.env.REMIX_APP_URL,
+  NEST_API_URL: process.env.NEST_API_URL,
 };
