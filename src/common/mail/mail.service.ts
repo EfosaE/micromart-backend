@@ -6,19 +6,20 @@ import * as path from 'path';
 import { OnEvent } from '@nestjs/event-emitter';
 import { UserCreatedEvent } from 'src/users/events/user-created.event';
 import { WelcomeEmailContext } from 'src/interfaces/types';
-import { ENV } from 'src/constants';
+import { ConfigService } from '@nestjs/config';
+
 
 @Injectable()
 export class MailService {
   private transporter: nodemailer.Transporter;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
       host: 'sandbox.smtp.mailtrap.io',
       port: 2525,
       auth: {
-        user: ENV.EMAIL_USER,
-        pass: ENV.EMAIL_PASS,
+        user: configService.get('EMAIL_USER'), // Get from ConfigService
+        pass: configService.get('EMAIL_PASS'), // Get from ConfigService
       },
       // logger: true, // Enable logging
       // debug: true, // Enable debugging
@@ -44,7 +45,7 @@ export class MailService {
 
     const html = this.compileTemplate(templateName, context);
     const mailOptions: nodemailer.SendMailOptions = {
-      from: ENV.EMAIL_FROM,
+      from: this.configService.get("EMAIL_FROM"),
       to,
       subject,
       html,

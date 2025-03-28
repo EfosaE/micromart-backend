@@ -1,17 +1,17 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AllExceptionsFilter } from './all-exceptions.filter';
-import { ValidationPipe } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
-import helmet from 'helmet';
+import { HttpAdapterHost, NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { AllExceptionsFilter } from "./all-exceptions.filter";
+import { ValidationPipe } from "@nestjs/common";
+import * as cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://micromart-web-app.vercel.app'], // Allow your frontend domain
+    origin: ["http://localhost:3000", "https://micromart-web-app.vercel.app"], // Allow your frontend domain
     credentials: true, // Allow cookies to be sent
   });
   // Use cookie-parser middleware
@@ -25,23 +25,26 @@ async function bootstrap() {
     })
   );
   const { httpAdapter } = app.get(HttpAdapterHost);
+
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   // Redirect requests from root to /api/v1
-  app.getHttpAdapter().get('/', (req, res) => {
-    res.redirect('/api/v1');
+  app.getHttpAdapter().get("/", (req, res) => {
+    res.redirect("/api/v1");
   });
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix("api/v1");
 
   const config = new DocumentBuilder()
-    .setTitle('Micromart')
-    .setDescription('The Micromart Api Description')
-    .setVersion('0.1')
+    .setTitle("Micromart")
+    .setDescription("The Micromart Api Description")
+    .setVersion("1.0")
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/v1/docs', app, document);
+  SwaggerModule.setup("api/v1/docs", app, document);
 
   await app.listen(process.env.PORT ?? 4000);
+  console.log(`Application is running on: ${await app.getUrl()}`)
 }
 bootstrap();

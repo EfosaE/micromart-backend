@@ -3,16 +3,17 @@ import {
   ArgumentsHost,
   HttpStatus,
   HttpException,
-} from '@nestjs/common';
-import { BaseExceptionFilter } from '@nestjs/core';
-import { Request, Response } from 'express';
+} from "@nestjs/common";
+import { BaseExceptionFilter } from "@nestjs/core";
+import { Request, Response } from "express";
 import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
-} from '@prisma/client/runtime/library';
-import { MyLoggerService } from './logger/logger.service';
-import { handlePrismaError } from './utils/prisma.util';
-import { ENV } from './constants';
+} from "@prisma/client/runtime/library";
+import { MyLoggerService } from "./logger/logger.service";
+import { handlePrismaError } from "./utils/prisma.util";
+
+import { ConfigService } from "@nestjs/config";
 
 type MyResponseObj = {
   statusCode: number;
@@ -24,19 +25,19 @@ type MyResponseObj = {
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
   private readonly logger = new MyLoggerService(AllExceptionsFilter.name);
-  // private readonly configService = new ConfigService();
+  private readonly configService = new ConfigService();
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const environment = ENV.NODE_ENV;
+    const environment = this.configService.get<string>("NODE_ENV");
 
     const myResponseObj: MyResponseObj = {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       timestamp: new Date().toISOString(),
       path: request.url,
-      response: 'Internal Server Error',
+      response: "Internal Server Error",
     };
 
     if (exception instanceof HttpException) {
@@ -45,11 +46,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       const errorResponse = exception.getResponse();
 
       myResponseObj.response =
-        typeof errorResponse === 'string'
+        typeof errorResponse === "string"
           ? { message: errorResponse }
           : errorResponse;
     } else if (exception instanceof PrismaClientKnownRequestError) {
-      if (environment === 'development') {
+      if (environment === "development") {
         myResponseObj.statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
         myResponseObj.response = {
           message: exception.message, // Prisma error message
@@ -75,13 +76,13 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       myResponseObj.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       myResponseObj.response = {
         message: exception.message,
-        stack: ENV.NODE_ENV === 'development' ? exception.stack : undefined, // Optional stack trace
+        stack: environment === "development" ? exception.stack : undefined, // Optional stack trace
       };
     } else {
       // Catch all other unexpected errors
-      console.error('Unexpected exception:', exception);
+      console.error("Unexpected exception:", exception);
       myResponseObj.response = {
-        message: 'An unexpected error occurred',
+        message: "An unexpected error occurred",
       };
     }
 

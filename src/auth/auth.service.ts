@@ -2,17 +2,18 @@ import {
   ForbiddenException,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { HashService } from './hash.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { MyLoggerService } from 'src/logger/logger.service';
-import { Request, Response } from 'express';
-import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dto/signIn-user.dto';
-import { UsersService } from 'src/users/users.service';
-import {  TokenPayload, User, Vendor } from 'src/interfaces/types';
-import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
-import { ENV } from 'src/constants';
+} from "@nestjs/common";
+import { HashService } from "./hash.service";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { MyLoggerService } from "src/logger/logger.service";
+import { Request, Response } from "express";
+import { JwtService } from "@nestjs/jwt";
+import { LoginDto } from "./dto/signIn-user.dto";
+import { UsersService } from "src/users/users.service";
+import { TokenPayload, User, Vendor } from "src/interfaces/types";
+import { CreateVendorDto } from "src/users/dto/create-vendor.dto";
+import { ConfigService } from "@nestjs/config";
+
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,8 @@ export class AuthService {
     private readonly hashService: HashService,
     private userService: UsersService,
     private readonly logger: MyLoggerService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   async signUpUser(userDetails: CreateUserDto) {
@@ -65,7 +67,7 @@ export class AuthService {
 
     // If no user is found, throw an UnauthorizedException
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException("Invalid email or password");
     }
 
     const isPasswordValid = await this.hashService.comparePasswords(
@@ -74,7 +76,7 @@ export class AuthService {
     );
     // if password verification fails throw an error
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException("Invalid email or password");
     }
 
     // Extract id and email
@@ -102,8 +104,8 @@ export class AuthService {
       role: user.activeRole,
     };
     const token = this.jwtService.sign(payload, {
-      secret: ENV.JWT_SECRET,
-      expiresIn: '1d',
+      secret: this.configService.get("JWT_SECRET"),
+      expiresIn: "1d",
     });
     return token;
   }
@@ -116,18 +118,18 @@ export class AuthService {
       role: user.activeRole,
     };
     return this.jwtService.sign(payload, {
-      secret: ENV.REFRESH_TOKEN,
-      expiresIn: '2d',
+      secret: this.configService.get("REFRESH_TOKEN"),
+      expiresIn: "2d",
     });
   }
 
   // set refreshToken
   setRefreshTokenCookie(token: string, res: Response) {
     // Set the refresh token in an HTTP-only cookie
-    res.cookie('refresh_token', token, {
+    res.cookie("refresh_token", token, {
       httpOnly: true, // Makes the cookie inaccessible to JavaScript
-      secure: ENV.NODE_ENV !== 'development',
-      sameSite: 'none', // allow for CORS
+      secure: this.configService.get("NODE_ENV ") !== "development",
+      sameSite: "none", // allow for CORS
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     });
   }
@@ -136,28 +138,28 @@ export class AuthService {
     try {
       // Decode and verify the refresh token
       const payload = this.jwtService.verify(token, {
-        secret: ENV.REFRESH_TOKEN,
+        secret: this.configService.get("REFRESH_TOKEN"),
       });
       return payload;
     } catch {
       throw new UnauthorizedException(
-        'Invalid or expired refresh token, please login'
+        "Invalid or expired refresh token, please login"
       );
     }
   }
 
   // extract userID
   extractUserID(req: Request): string {
-    const authToken = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
+    const authToken = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
     if (!authToken) {
-      throw new UnauthorizedException('Missing token: please login');
+      throw new UnauthorizedException("Missing token: please login");
     }
     try {
       // Verify the token and decode it
       const decodedToken = this.jwtService.verify(authToken);
       return decodedToken.sub; //ID is stored in the payload.sub
     } catch (error) {
-      if (error) throw new ForbiddenException('Invalid or expired token');
+      if (error) throw new ForbiddenException("Invalid or expired token");
     }
   }
 }

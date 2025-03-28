@@ -6,15 +6,15 @@ import {
 } from 'cloudinary';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import toStream = require('buffer-to-stream');
-import { ENV } from 'src/constants';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CloudinaryService {
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     cloudinary.config({
-      cloud_name: ENV.CLOUDINARY_CLOUD_NAME,
-      api_key: ENV.CLOUDINARY_API_KEY,
-      api_secret: ENV.CLOUDINARY_API_SECRET,
+      cloud_name: configService.get('CLOUDINARY_CLOUD_NAME'),
+      api_key: configService.get('CLOUDINARY_API_KEY'),
+      api_secret: configService.get('CLOUDINARY_API_SECRET'),
     });
   }
 

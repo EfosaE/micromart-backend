@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ENV } from 'src/constants';
+import { ConfigService } from '@nestjs/config';
 import { PayStackResponse } from 'src/interfaces/types';
 
 @Injectable()
 export class PaymentService {
+    constructor(
+      private readonly configService: ConfigService
+    ) {}
   async createPaymentRequest(email: string) {
+    
     let customer: PayStackResponse;
     customer = await this.getCustomer(email);
     if (!customer.status) {
@@ -32,7 +36,7 @@ export class PaymentService {
       const response = await fetch('https://api.paystack.co/paymentrequest', {
         method: 'POST', // Specify the HTTP method
         headers: {
-          Authorization: `Bearer ${ENV.TEST_SECRET_KEY}`,
+          Authorization: `Bearer ${this.configService.get("TEST_SECRET_KEY")}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData), // Convert requestData to JSON string
@@ -56,10 +60,10 @@ export class PaymentService {
     });
 
     try {
-      const response = await fetch(`${ENV.PAYSTACK_BASE_URL}/customer`, {
+      const response = await fetch(`${this.configService.get("PAYSTACK_BASE_URL")}/customer`, {
         method: 'POST', // Specify the HTTP method
         headers: {
-          Authorization: `Bearer ${ENV.TEST_SECRET_KEY}`,
+          Authorization: `Bearer ${this.configService.get("TEST_SECRET_KEY")}`,
           'Content-Type': 'application/json',
         },
         body: params, // Convert requestData to JSON string
@@ -78,10 +82,10 @@ export class PaymentService {
   }
 
   async getCustomer(email: string): Promise<PayStackResponse> {
-    const response = await fetch(`${ENV.PAYSTACK_BASE_URL}/customer/${email}`, {
+    const response = await fetch(`${this.configService.get("PAYSTACK_BASE_URL")}/customer/${email}`, {
       method: 'GET', // Specify the HTTP method
       headers: {
-        Authorization: `Bearer ${ENV.TEST_SECRET_KEY}`,
+        Authorization: `Bearer ${this.configService.get("TEST_SECRET_KEY")}`,
         'Content-Type': 'application/json',
       },
     });

@@ -22,7 +22,9 @@ import { User } from '@prisma/client';
 import { CreateVendorDto } from 'src/users/dto/create-vendor.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleAuthGuard } from './google.guard';
-import { ENV } from 'src/constants';
+import { ConfigService } from '@nestjs/config';
+
+
 
 // Define the type to extract only the `id` and `name`
 type UserData = Pick<User, 'id' | 'name'>;
@@ -30,7 +32,7 @@ type UserData = Pick<User, 'id' | 'name'>;
 @SkipAuth()
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
 
   @Post('register/user')
   registerUser(@Body() user: CreateUserDto) {
@@ -73,7 +75,7 @@ export class AuthController {
     if (query.error) {
       // Handle the error, e.g., "access_denied"
       return {
-        url: `${ENV.REMIX_APP_URL}/login?error=${query.error}`,
+        url: `${this.configService.get("REMIX_APP_URL")}/login?error=${query.error}`,
       };
     }
 
@@ -104,7 +106,7 @@ export class AuthController {
 
     // Handle successful login
     return {
-      url: `${ENV.REMIX_APP_URL}/callback?token=${encodeURIComponent(token)}`,
+      url: `${this.configService.get("REMIX_APP_URL")}/callback?token=${encodeURIComponent(token)}`,
     };
   }
 
