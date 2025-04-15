@@ -50,12 +50,12 @@ model Product {
   quantity    Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  tags        Tag[]       @relation("ProductToTags") // Many-Many
+  tags        Tag[]       // Many-to-Many relationship with Tag allow prisma handle the join tableName
   vendorId    String
-  cartItems   CartItem[]  @relation("ProductToCartItems") // One-Many
-  orderItems  OrderItem[] @relation("ProductToOrderItems") // One-Many
+  cartItems   CartItem[]  // One-to-Many relationship with CartItems allow prisma handle the join tableName
+  orderItems  OrderItem[] // One-to-Many relationship with OrderItems allow prisma handle the join tableName
   user        User        @relation(fields: [vendorId], references: [id])
-  reviews     Review[]    @relation("ProductToReviews") // One-Many
+  reviews     Review[]    // One-to-Many relationship with Reviews allow prisma handle the join tableName
 
   @@unique([name, vendorId])
 }
@@ -65,7 +65,7 @@ model Tag {
   name    String
   tagType TagType
 
-  Product Product[] @relation("ProductToTags")
+  Product Product[] 
 
   @@unique([name, tagType])
 }
@@ -75,7 +75,7 @@ model Review {
   content   String
   rating    Int
   productId String
-  product   Product  @relation(fields: [productId], references: [id], name: "ProductToReviews")
+  product   Product  @relation(fields: [productId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   createdAt DateTime @default(now())
@@ -99,7 +99,7 @@ model OrderItem {
   orderId   String
   quantity  Int
   order     Order   @relation(fields: [orderId], references: [id])
-  product   Product @relation(fields: [productId], references: [id], name: "ProductToOrderItems")
+  product   Product @relation(fields: [productId], references: [id])
 
   @@id([orderId, productId])
 }
@@ -119,7 +119,7 @@ model CartItem {
   cartId    String
   productId String
   cart      Cart    @relation(fields: [cartId], references: [buyerId])
-  product   Product @relation(fields: [productId], references: [id], name: "ProductToCartItems")
+  product   Product @relation(fields: [productId], references: [id])
 
   @@unique([cartId, productId])
 }
