@@ -9,6 +9,7 @@ import {
   UploadedFile,
   BadRequestException,
   UseGuards,
+  Param,
 
 } from '@nestjs/common';
 
@@ -45,6 +46,15 @@ export class ProductsController {
     }
     return this.productsService.getFilteredProducts(query, limit);
   }
+
+  @SkipAuth()
+  @Get(':id')
+  getProductById(@Param('id') id: string) {
+    if (!id) throw new BadRequestException('Product ID is required');
+  
+    return this.productsService.getProductByID(id);
+  }
+  
 
   @SkipAuth()
   @Get('categories')

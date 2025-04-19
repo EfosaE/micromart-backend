@@ -20,21 +20,21 @@ CREATE TABLE "Tag" (
 );
 
 -- CreateTable
-CREATE TABLE "_ProductToTag" (
+CREATE TABLE "productToTag" (
     "A" TEXT NOT NULL,
     "B" INTEGER NOT NULL,
 
-    CONSTRAINT "_ProductToTag_AB_pkey" PRIMARY KEY ("A","B")
+    CONSTRAINT "productToTag_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_tagType_key" ON "Tag"("name", "tagType");
 
 -- CreateIndex
-CREATE INDEX "_ProductToTag_B_index" ON "_ProductToTag"("B");
+CREATE INDEX "productToTag_B_index" ON "productToTag"("B");
 
 -- AddForeignKey
-ALTER TABLE "_ProductToTag" ADD CONSTRAINT "_ProductToTag_A_fkey" FOREIGN KEY ("A") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "productToTag" ADD CONSTRAINT "productToTag_A_fkey" FOREIGN KEY ("A") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ProductToTag" ADD CONSTRAINT "_ProductToTag_B_fkey" FOREIGN KEY ("B") REFERENCES "Tag"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "productToTag" ADD CONSTRAINT "productToTag_B_fkey" FOREIGN KEY ("B") REFERENCES "Tag"("id") ON DELETE CASCADE ON UPDATE CASCADE;

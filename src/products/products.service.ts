@@ -41,6 +41,8 @@ export class ProductsService {
       select: {
         price: true,
         quantity: true,
+        imgUrl: true,
+        name: true,
       },
     });
 
