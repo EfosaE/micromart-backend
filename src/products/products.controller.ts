@@ -57,13 +57,13 @@ export class ProductsController {
   
 
   @SkipAuth()
-  @Get('categories')
+  @Get('list/categories')
   getAllCategories() {
     return this.productsService.getAllCategories();
   }
 
   @SkipAuth()
-  @Get('tags')
+  @Get('list/tags')
   getAllTags() {
     return this.productsService.getAllTagsGroupedByTagType();
   }

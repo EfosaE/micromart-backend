@@ -144,6 +144,7 @@ export class ProductsService {
     const categories = await this.db.category.findMany({
       orderBy: { id: 'asc' }, // Ordering by the 'id' field in ascending order
     });
+    console.log(categories);
     return categories;
   }
 }

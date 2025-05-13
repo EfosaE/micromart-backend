@@ -118,7 +118,7 @@ export class AuthService {
       role: user.activeRole,
     };
     return this.jwtService.sign(payload, {
-      secret: this.configService.get("REFRESH_TOKEN"),
+      secret: this.configService.get("REFRESH_TOKEN_SECRET"),
       expiresIn: "2d",
     });
   }
@@ -138,7 +138,7 @@ export class AuthService {
     try {
       // Decode and verify the refresh token
       const payload = this.jwtService.verify(token, {
-        secret: this.configService.get("REFRESH_TOKEN"),
+        secret: this.configService.get("REFRESH_TOKEN_SECRET"),
       });
       return payload;
     } catch {
