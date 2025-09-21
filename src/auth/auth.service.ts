@@ -67,7 +67,7 @@ export class AuthService {
 
     // If no user is found, throw an UnauthorizedException
     if (!user) {
-      throw new UnauthorizedException("Invalid email or password");
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     const isPasswordValid = await this.hashService.comparePasswords(
@@ -76,12 +76,12 @@ export class AuthService {
     );
     // if password verification fails throw an error
     if (!isPasswordValid) {
-      throw new UnauthorizedException("Invalid email or password");
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     // Extract id and email
-    const { id, name, activeRole } = user;
-    const requiredUserPayload = { id, name, activeRole };
+    const { id, name, activeRole, email } = user;
+    const requiredUserPayload = { id, name, activeRole, email };
     const accessToken = await this.createAccessToken(requiredUserPayload);
     const refreshToken = await this.createRefreshToken(requiredUserPayload);
     this.setRefreshTokenCookie(refreshToken, res);
@@ -102,6 +102,7 @@ export class AuthService {
       sub: user.id,
       username: user.name,
       role: user.activeRole,
+      email: user.email,
     };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get("JWT_SECRET"),

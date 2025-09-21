@@ -9,6 +9,7 @@ export enum Role {
 export interface TokenPayload {
   id: string;
   name: string;
+  email: string;
   activeRole: $Enums.UserRole; // prisma wants you to use theirs
 }
 

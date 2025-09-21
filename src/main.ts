@@ -11,7 +11,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors({
-    origin: ["http://localhost:3000", "https://micromart-web-app.vercel.app"], // Allow your frontend domain
+    origin: ["http://localhost:3000","http://localhost:5173", "https://micromart-web-app.vercel.app"], // Allow your frontend domain
     credentials: true, // Allow cookies to be sent
   });
   // Use cookie-parser middleware

@@ -8,7 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
+import  { Request } from 'express';
 
 
 import { IS_PUBLIC_KEY } from 'src/decorators/skip-auth';
@@ -45,6 +45,7 @@ export class AuthGuard implements CanActivate {
       request['user'] = {
         id: payload.sub,
         name: payload.username,
+        email: payload.email,
         role: payload.role,
         iat: payload.iat,
         exp: payload.exp,

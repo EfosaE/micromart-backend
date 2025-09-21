@@ -86,7 +86,7 @@ export class AuthController {
     }
 
     const user = req.user as User;
-    if (!user?.id || !user?.name || !user?.activeRole) {
+    if (!user?.id || !user?.name || !user?.activeRole || !user?.email) {
       throw new UnauthorizedException('Invalid user data.');
     }
 
@@ -96,6 +96,7 @@ export class AuthController {
         id: user.id,
         name: user.name,
         activeRole: user.activeRole,
+        email: user.email,
       });
     } catch (err) {
       console.error('Error generating access token:', err);
@@ -129,6 +130,7 @@ export class AuthController {
       id: user.sub,
       name: user.username,
       activeRole: user.role,
+      email: user.email,
     };
     const newAccessToken =
       await this.authService.createAccessToken(formattedUser);

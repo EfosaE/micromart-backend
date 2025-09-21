@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from 'src/interfaces/types';
 
 
 
@@ -38,7 +39,7 @@ export class UsersController {
   @Get('profile')
     getProfile(@Req() req: Request) {
       // Access the user data that was attached in middleware
-      const user = req['user'];
+      const user = req['user'] as User;
       return user;
     }
 }
