@@ -26,6 +26,7 @@ export class PaymentController {
     return this.paymentService.initializeTransaction(user.email, body.amount);
   }
 
+  @SkipAuth()
   @Get("verify")
   async verify(@Query("reference") reference: string) {
     return this.paymentService.verifyTransaction(reference);

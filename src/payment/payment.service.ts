@@ -19,6 +19,7 @@ export class PaymentService {
           body: JSON.stringify({
             email,
             amount: amount * 100, // Paystack expects amount in kobo
+            callback_url: `${this.configService.get("REMIX_APP_URL")}/payments/callback`,
           }),
         }
       );
